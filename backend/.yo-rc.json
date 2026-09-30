@@ -1,0 +1,25 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "FacilityBackend",
+    "buildTool": "maven",
+    "cacheProvider": "no",
+    "clientFramework": "no",
+    "creationTimestamp": 1790765782294,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "enableTranslation": false,
+    "entities": [],
+    "jhipsterVersion": "8.11.0",
+    "jwtSecretKey": "YjNkMDZmNjRmNzg0OGM0MjczMWZhNDRlZmZiZDNiYTM3ZGExOGVjZGY5N2JlN2MzMGI2Njk3NjY2MmVhNDgxMGM3NDU2MTI0NzYzZmRkMDZiM2Y3NzU5MWQ3YjJlNjYxZjgxN2E5ODRjZGQ2YWNkNTI5NTFjYTVlYWU2YjE5ZDQ=",
+    "languages": ["en"],
+    "nativeLanguage": "en",
+    "packageName": "com.limitcross.facility",
+    "prodDatabaseType": "mysql",
+    "serverPort": 8080,
+    "skipClient": true,
+    "skipUserManagement": false,
+    "testFrameworks": []
+  }
+}

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="00000000000003" author="jhipster">
+        <addColumn tableName="jhi_user">
+            <column name="phone" type="varchar(30)"/>
+        </addColumn>
+
+        <createTable tableName="facility_service">
+            <column name="id" type="varchar(50)"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="title" type="varchar(120)"><constraints nullable="false"/></column>
+            <column name="emoji" type="varchar(10)"><constraints nullable="false"/></column>
+            <column name="category" type="varchar(40)"><constraints nullable="false"/></column>
+            <column name="description" type="varchar(500)"><constraints nullable="false"/></column>
+            <column name="price_range" type="varchar(60)"><constraints nullable="false"/></column>
+            <column name="starting_price" type="int"><constraints nullable="false"/></column>
+            <column name="rating" type="decimal(3,2)"><constraints nullable="false"/></column>
+            <column name="reviews_count" type="int"><constraints nullable="false"/></column>
+            <column name="duration" type="varchar(40)"><constraints nullable="false"/></column>
+            <column name="highlights" type="varchar(1000)"><constraints nullable="false"/></column>
+            <column name="is_popular" type="boolean" defaultValueBoolean="false"><constraints nullable="false"/></column>
+        </createTable>
+
+        <createTable tableName="booking">
+            <column name="id" type="varchar(36)"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="owner_login" type="varchar(100)"><constraints nullable="false"/></column>
+            <column name="service_id" type="varchar(50)"><constraints nullable="false"/></column>
+            <column name="service_title" type="varchar(120)"><constraints nullable="false"/></column>
+            <column name="emoji" type="varchar(10)"><constraints nullable="false"/></column>
+            <column name="price" type="int"><constraints nullable="false"/></column>
+            <column name="service_fee" type="int" defaultValueNumeric="49"><constraints nullable="false"/></column>
+            <column name="date" type="date"><constraints nullable="false"/></column>
+            <column name="time_slot" type="varchar(60)"><constraints nullable="false"/></column>
+            <column name="address" type="varchar(500)"><constraints nullable="false"/></column>
+            <column name="status" type="varchar(20)" defaultValue="REQUESTED"><constraints nullable="false"/></column>
+            <column name="assigned_pro_name" type="varchar(120)" defaultValue="Not assigned yet"><constraints nullable="false"/></column>
+            <column name="pro_rating" type="decimal(3,2)" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="updated_at" type="timestamp"><constraints nullable="false"/></column>
+        </createTable>
+
+        <insert tableName="facility_service">
+            <column name="id" value="hm-ac"/><column name="title" value="AC Service &amp; Repair"/><column name="emoji" value="❄️"/>
+            <column name="category" value="homeMaintenance"/><column name="description" value="Service, gas refill, deep clean, installation"/>
+            <column name="price_range" value="₹400 - ₹2,500"/><column name="starting_price" valueNumeric="400"/><column name="rating" valueNumeric="4.86"/>
+            <column name="reviews_count" valueNumeric="4520"/><column name="duration" value="45-60 mins"/><column name="highlights" value="Power jet foam clean|Gas leak detection|30-day warranty"/><column name="is_popular" valueBoolean="true"/>
+        </insert>
+        <insert tableName="facility_service">
+            <column name="id" value="hm-plumb"/><column name="title" value="Plumbing"/><column name="emoji" value="🔧"/>
+            <column name="category" value="homeMaintenance"/><column name="description" value="Leaks, tap repair, pipe fitting, blockage"/>
+            <column name="price_range" value="₹300 - ₹1,500"/><column name="starting_price" valueNumeric="300"/><column name="rating" valueNumeric="4.81"/>
+            <column name="reviews_count" valueNumeric="3100"/><column name="duration" value="30-60 mins"/><column name="highlights" value="Certified plumbers|Standardized rate card|Genuine spare parts"/><column name="is_popular" valueBoolean="false"/>
+        </insert>
+        <insert tableName="facility_service">
+            <column name="id" value="hm-electric"/><column name="title" value="Electrician"/><column name="emoji" value="⚡"/>
+            <column name="category" value="homeMaintenance"/><column name="description" value="Wiring, fan, switch, MCB repair"/>
+            <column name="price_range" value="₹300 - ₹1,500"/><column name="starting_price" valueNumeric="300"/><column name="rating" valueNumeric="4.84"/>
+            <column name="reviews_count" valueNumeric="3890"/><column name="duration" value="30-60 mins"/><column name="highlights" value="Background verified pros|High grade equipment|Post-service test"/><column name="is_popular" valueBoolean="true"/>
+        </insert>
+        <insert tableName="facility_service">
+            <column name="id" value="clean-home"/><column name="title" value="Full Home Cleaning"/><column name="emoji" value="🧹"/>
+            <column name="category" value="cleaning"/><column name="description" value="Deep cleaning for kitchens, bathrooms and rooms"/>
+            <column name="price_range" value="₹999 - ₹3,999"/><column name="starting_price" valueNumeric="999"/><column name="rating" valueNumeric="4.87"/>
+            <column name="reviews_count" valueNumeric="2210"/><column name="duration" value="2-4 hours"/><column name="highlights" value="Trained professionals|Eco-friendly products|Quality checklist"/><column name="is_popular" valueBoolean="true"/>
+        </insert>
+        <insert tableName="facility_service">
+            <column name="id" value="beauty-women"/><column name="title" value="Salon at Home"/><column name="emoji" value="💇"/>
+            <column name="category" value="beautyWomen"/><column name="description" value="Beauty and wellness services at your doorstep"/>
+            <column name="price_range" value="₹499 - ₹2,999"/><column name="starting_price" valueNumeric="499"/><column name="rating" valueNumeric="4.90"/>
+            <column name="reviews_count" valueNumeric="1850"/><column name="duration" value="45-120 mins"/><column name="highlights" value="Verified experts|Premium products|Private appointments"/><column name="is_popular" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

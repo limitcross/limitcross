@@ -1,0 +1,17 @@
+# This configuration is intended for development purpose, it's your responsibility to harden it for production.
+name: facilitybackend
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      - MYSQL_DATABASE=FacilityBackend
+      - MYSQL_USER=FacilityBackend
+      - MYSQL_PASSWORD=FacilityBackend
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: ['CMD-SHELL', 'mysqladmin ping -h localhost -u$${MYSQL_USER} -p$${MYSQL_PASSWORD}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - 127.0.0.1:3306:3306

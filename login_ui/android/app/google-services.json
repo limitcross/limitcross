@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "171365152705",
+    "project_id": "login-ui-test-2026",
+    "storage_bucket": "login-ui-test-2026.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171365152705:android:da2a5bf78618602929a140",
+        "android_client_info": {
+          "package_name": "com.loginui.login_ui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "171365152705-da91kknlctgsf0866a9smqnsbg0g18or.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR-s5XI5V9HK8H3QcDXyhzLFOLoC5s878"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "171365152705-da91kknlctgsf0866a9smqnsbg0g18or.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
