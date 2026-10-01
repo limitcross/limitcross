@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity BookingSubscription.
+    -->
+    <changeSet id="20261001091743-1" author="jhipster">
+        <createTable tableName="booking_subscription">
+            <column name="id" type="bigint" autoIncrement="true" startWith="1500">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="frequency" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="days_of_week" type="varchar(30)">
+                <constraints nullable="true" />
+            </column>
+            <column name="preferred_time" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="start_date" type="date">
+                <constraints nullable="false" />
+            </column>
+            <column name="end_date" type="date">
+                <constraints nullable="true" />
+            </column>
+            <column name="next_run_date" type="date">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="auto_pay" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="created_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="customer_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="service_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="service_package_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="address_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="preferred_professional_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+        <dropDefaultValue tableName="booking_subscription" columnName="created_at" columnDataType="${datetimeType}"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+
+    <!--
+        Load sample data generated with Faker.js
+        - This data can be easily edited using a CSV editor (or even MS Excel) and
+          is located in the 'src/main/resources/config/liquibase/fake-data' directory
+        - By default this data is applied when running with the JHipster 'dev' profile.
+          This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
+          Spring Boot configuration key.
+    -->
+    <changeSet id="20261001091743-1-data" author="jhipster" context="faker">
+        <loadData
+                  file="config/liquibase/fake-data/booking_subscription.csv"
+                  separator=";"
+                  tableName="booking_subscription"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="frequency" type="string"/>
+            <column name="days_of_week" type="string"/>
+            <column name="preferred_time" type="string"/>
+            <column name="start_date" type="date"/>
+            <column name="end_date" type="date"/>
+            <column name="next_run_date" type="date"/>
+            <column name="status" type="string"/>
+            <column name="auto_pay" type="boolean"/>
+            <column name="created_at" type="date"/>
+            <column name="customer_id" type="numeric"/>
+            <column name="service_id" type="numeric"/>
+            <column name="service_package_id" type="numeric"/>
+            <column name="address_id" type="numeric"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,11 @@
+id;name;metric;threshold;reward_amount;period;active
+1;till;PEAK_HOUR_JOBS;12913.69;32140.47;DAILY;false
+2;meanwhile queasily fooey;RATING;20751.69;32760.86;DAILY;false
+3;eventually;RATING;32103.68;30093.07;WEEKLY;false
+4;dislocate;RATING;10278.93;31064.78;MONTHLY;true
+5;wasabi;PEAK_HOUR_JOBS;16068.28;27173.23;DAILY;true
+6;rowdy amid;PEAK_HOUR_JOBS;28624.72;13672.02;WEEKLY;true
+7;punctuation why and;PEAK_HOUR_JOBS;7317.14;31805.79;WEEKLY;false
+8;however unto;PEAK_HOUR_JOBS;26867.78;25538.05;DAILY;true
+9;gadzooks whoa;PEAK_HOUR_JOBS;21776.59;28292.75;WEEKLY;true
+10;when contradict impractical;JOBS_COMPLETED;5322.98;3929.41;WEEKLY;true

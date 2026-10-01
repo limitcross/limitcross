@@ -12,11 +12,15 @@ class AppCredential {
   final DateTime updatedAt;
 
   factory AppCredential.fromMap(Map<String, dynamic> map) {
+    final rawUpdatedAt = map['updatedAt'];
+    final updatedAt = rawUpdatedAt is DateTime
+        ? rawUpdatedAt
+        : DateTime.tryParse(rawUpdatedAt?.toString() ?? '') ?? DateTime.now();
     return AppCredential(
       email: (map['email'] ?? '').toString(),
       appName: (map['appName'] ?? '').toString(),
       appPassword: (map['appPassword'] ?? '').toString(),
-      updatedAt: (map['updatedAt'] as DateTime?) ?? DateTime.now(),
+      updatedAt: updatedAt,
     );
   }
 

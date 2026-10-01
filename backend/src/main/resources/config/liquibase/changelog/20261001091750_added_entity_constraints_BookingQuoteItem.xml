@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity BookingQuoteItem.
+    -->
+    <changeSet id="20261001091750-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="quote_id"
+                                 baseTableName="booking_quote_item"
+                                 constraintName="fk_booking_quote_item__quote_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="booking_quote"
+                                 />
+    </changeSet>
+</databaseChangeLog>

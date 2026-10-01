@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity Professional.
+    -->
+    <changeSet id="20261001091726-1" author="jhipster">
+        <createTable tableName="professional">
+            <column name="id" type="bigint" autoIncrement="true" startWith="1500">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="display_name" type="varchar(120)">
+                <constraints nullable="false" />
+            </column>
+            <column name="photo_url" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="gender" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="onboarding_status" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="online" type="boolean">
+                <constraints nullable="false" />
+            </column>
+            <column name="avg_rating" type="double">
+                <constraints nullable="true" />
+            </column>
+            <column name="jobs_completed" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="cancellation_rate" type="double">
+                <constraints nullable="true" />
+            </column>
+            <column name="last_lat" type="double">
+                <constraints nullable="true" />
+            </column>
+            <column name="last_lng" type="double">
+                <constraints nullable="true" />
+            </column>
+            <column name="last_location_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="joined_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="cash_in_hand" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="cash_limit" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="max_daily_jobs" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="languages" type="varchar(200)">
+                <constraints nullable="true" />
+            </column>
+            <column name="bank_account_enc" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="ifsc_code" type="varchar(11)">
+                <constraints nullable="true" />
+            </column>
+            <column name="deleted_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="created_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="updated_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_professional__user_id" />
+            </column>
+            <column name="home_city_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="tier_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+        <dropDefaultValue tableName="professional" columnName="last_location_at" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="professional" columnName="joined_at" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="professional" columnName="deleted_at" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="professional" columnName="created_at" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="professional" columnName="updated_at" columnDataType="${datetimeType}"/>
+    </changeSet>
+
+    <changeSet id="20261001091726-1-relations" author="jhipster">
+
+        <createTable tableName="rel_professional__zone">
+            <column name="zone_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="professional_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="professional_id, zone_id" tableName="rel_professional__zone"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+
+    <!--
+        Load sample data generated with Faker.js
+        - This data can be easily edited using a CSV editor (or even MS Excel) and
+          is located in the 'src/main/resources/config/liquibase/fake-data' directory
+        - By default this data is applied when running with the JHipster 'dev' profile.
+          This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
+          Spring Boot configuration key.
+    -->
+    <changeSet id="20261001091726-1-data" author="jhipster" context="faker">
+        <loadData
+                  file="config/liquibase/fake-data/professional.csv"
+                  separator=";"
+                  tableName="professional"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="display_name" type="string"/>
+            <column name="photo_url" type="string"/>
+            <column name="gender" type="string"/>
+            <column name="onboarding_status" type="string"/>
+            <column name="online" type="boolean"/>
+            <column name="avg_rating" type="numeric"/>
+            <column name="jobs_completed" type="numeric"/>
+            <column name="cancellation_rate" type="numeric"/>
+            <column name="last_lat" type="numeric"/>
+            <column name="last_lng" type="numeric"/>
+            <column name="last_location_at" type="date"/>
+            <column name="joined_at" type="date"/>
+            <column name="cash_in_hand" type="numeric"/>
+            <column name="cash_limit" type="numeric"/>
+            <column name="max_daily_jobs" type="numeric"/>
+            <column name="languages" type="string"/>
+            <column name="bank_account_enc" type="string"/>
+            <column name="ifsc_code" type="string"/>
+            <column name="deleted_at" type="date"/>
+            <column name="created_at" type="date"/>
+            <column name="updated_at" type="date"/>
+            <column name="user_id" type="numeric"/>
+            <column name="home_city_id" type="numeric"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

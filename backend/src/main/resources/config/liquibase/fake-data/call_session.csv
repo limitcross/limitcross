@@ -1,0 +1,11 @@
+id;virtual_number;provider_call_id;duration_sec;status;created_at;caller_id;callee_id;booking_id
+1;incidentally behind;duh upward between;29689;FAILED;2026-09-30T22:41:49;1;1;1
+2;incidentally;hmph;29882;INITIATED;2026-10-01T01:43:44;2;2;2
+3;cumbersome zowie;since;748;FAILED;2026-10-01T02:31:46;2;2;3
+4;surprisingly entwine;motionless median humidity;14660;FAILED;2026-10-01T06:12:35;2;1;4
+5;atop;inasmuch inculcate sin;29775;CONNECTED;2026-09-30T18:43:39;2;1;5
+6;ouch unabashedly;turbulent reclassify easy;7452;INITIATED;2026-10-01T03:50:16;2;2;6
+7;keel who yum;astride near;11088;CONNECTED;2026-10-01T06:26:43;1;1;7
+8;bitterly beloved;uh-huh gah;27428;CONNECTED;2026-10-01T01:47:26;2;2;8
+9;gadzooks blah;mean;15547;COMPLETED;2026-10-01T02:37:17;1;1;9
+10;geez unearth;antagonize fooey beyond;9402;FAILED;2026-10-01T03:05:40;2;2;10

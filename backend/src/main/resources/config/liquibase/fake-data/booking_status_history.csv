@@ -1,0 +1,11 @@
+id;from_status;to_status;changed_by;note;created_at;booking_id
+1;PRO_EN_ROUTE;PRO_ARRIVED;between colossal and;enfold sprinkles incidentally;2026-10-01T03:06:19;1
+2;PRO_EN_ROUTE;NO_SHOW;unaware;waltz;2026-09-30T17:57:19;2
+3;FAILED;PRO_EN_ROUTE;along hasty;elegantly physical lively;2026-09-30T12:57:20;3
+4;CONFIRMED;CONFIRMED;adolescent testify awful;uh-huh prioritize;2026-10-01T01:52:16;4
+5;PRO_ARRIVED;REQUESTED;unimportant overcook excluding;deprave hmph zowie;2026-09-30T16:57:00;5
+6;CONFIRMED;PRO_ARRIVED;exalt whereas apropos;before joyful;2026-09-30T20:02:12;6
+7;COMPLETED;IN_PROGRESS;yuck vet mysteriously;apud enchanting up;2026-09-30T23:34:29;7
+8;CANCELLED;PRO_EN_ROUTE;supposing how;reluctantly ride;2026-10-01T01:04:58;8
+9;COMPLETED;IN_PROGRESS;strategy;postbox obediently;2026-10-01T07:42:16;9
+10;REQUESTED;CONFIRMED;finally;loyally;2026-10-01T03:26:54;10

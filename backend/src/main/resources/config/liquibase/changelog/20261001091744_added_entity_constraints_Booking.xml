@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity Booking.
+    -->
+    <changeSet id="20261001091744-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="customer_id"
+                                 baseTableName="booking"
+                                 constraintName="fk_booking__customer_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="service_id"
+                                 baseTableName="booking"
+                                 constraintName="fk_booking__service_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="facility_service"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="city_id"
+                                 baseTableName="booking"
+                                 constraintName="fk_booking__city_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="city"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="address_id"
+                                 baseTableName="booking"
+                                 constraintName="fk_booking__address_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="customer_address"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="professional_id"
+                                 baseTableName="booking"
+                                 constraintName="fk_booking__professional_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="professional"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="coupon_id"
+                                 baseTableName="booking"
+                                 constraintName="fk_booking__coupon_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="coupon"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="subscription_id"
+                                 baseTableName="booking"
+                                 constraintName="fk_booking__subscription_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="booking_subscription"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="slot_capacity_id"
+                                 baseTableName="booking"
+                                 constraintName="fk_booking__slot_capacity_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="slot_capacity"
+                                 />
+    </changeSet>
+</databaseChangeLog>

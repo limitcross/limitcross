@@ -1,0 +1,11 @@
+id;gateway;event_id;event_type;signature_ok;payload;status;received_at;processed_at
+1;CASH;but cash faint;hoot limp;false;../fake-data/blob/hipster.txt;PROCESSED;2026-10-01T04:09:12;2026-09-30T14:27:49
+2;RAZORPAY;astride uh-huh;till trench crooked;true;../fake-data/blob/hipster.txt;FAILED;2026-09-30T19:22:56;2026-09-30T16:53:19
+3;WALLET;paintwork trash;fooey;true;../fake-data/blob/hipster.txt;PROCESSED;2026-09-30T12:58:46;2026-10-01T01:43:10
+4;WALLET;during devastation;plastic SUV;false;../fake-data/blob/hipster.txt;FAILED;2026-09-30T21:13:24;2026-09-30T15:38:55
+5;RAZORPAY;charter duh;yieldingly annual behest;false;../fake-data/blob/hipster.txt;PROCESSED;2026-09-30T23:48:17;2026-09-30T15:52:30
+6;RAZORPAY;fidget via imaginative;until continually;false;../fake-data/blob/hipster.txt;PROCESSED;2026-09-30T13:09:59;2026-09-30T15:45:42
+7;CASHFREE;phew distorted limply;aw cosset;true;../fake-data/blob/hipster.txt;FAILED;2026-09-30T22:45:52;2026-09-30T17:38:58
+8;CASH;gigantic uh-huh;excellent notwithstanding;false;../fake-data/blob/hipster.txt;PROCESSED;2026-09-30T23:04:11;2026-09-30T13:25:36
+9;CASHFREE;inveigle untidy;anti;false;../fake-data/blob/hipster.txt;RECEIVED;2026-09-30T11:13:51;2026-09-30T11:24:06
+10;CASHFREE;consequently cemetery underneath;exhaust testimonial clear-cut;false;../fake-data/blob/hipster.txt;RECEIVED;2026-09-30T14:08:30;2026-09-30T14:41:24

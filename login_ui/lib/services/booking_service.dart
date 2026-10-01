@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/booking_item.dart';
 import '../models/service_item.dart';
 import 'api_client.dart';
+import 'auth_service.dart';
 
 class BookingService extends ChangeNotifier {
   static final BookingService _instance = BookingService._internal();
@@ -38,10 +39,21 @@ class BookingService extends ChangeNotifier {
   }
 
   Future<void> loadForCurrentUser() async {
-    final response = await ApiClient.instance.get('/bookings') as List<dynamic>;
+    if (AuthService().currentUser == null) {
+      _bookings.clear();
+      notifyListeners();
+      return;
+    }
+
+    final response = await ApiClient.instance.get('/bookings');
+    if (response is! List) {
+      throw const FormatException('Invalid bookings response from the server.');
+    }
     _bookings
       ..clear()
-      ..addAll(response.map((item) => BookingItem.fromApi(item as Map<String, dynamic>)));
+      ..addAll(
+        response.whereType<Map<String, dynamic>>().map(BookingItem.fromMap),
+      );
     notifyListeners();
   }
 
@@ -51,13 +63,20 @@ class BookingService extends ChangeNotifier {
     required String timeSlot,
     required String address,
   }) async {
+    if (AuthService().currentUser == null) {
+      throw StateError('You must be signed in to create a booking.');
+    }
+
     final response = await ApiClient.instance.post('/bookings', {
       'serviceId': service.id,
-      'date': date.toIso8601String().split('T').first,
+      'date': _dateOnly(date),
       'timeSlot': timeSlot,
       'address': address.trim(),
-    }) as Map<String, dynamic>;
-    final booking = BookingItem.fromApi(response);
+    });
+    if (response is! Map<String, dynamic>) {
+      throw const FormatException('Invalid booking response from the server.');
+    }
+    final booking = BookingItem.fromMap(response);
     _bookings.insert(0, booking);
     notifyListeners();
     return booking;
@@ -72,10 +91,14 @@ class BookingService extends ChangeNotifier {
       throw StateError('This booking can no longer be cancelled.');
     }
 
-    await ApiClient.instance.post('/bookings/$id/cancel');
-    _bookings[index] = _bookings[index].copyWith(
-      status: BookingStatus.cancelled,
+    final response = await ApiClient.instance.post(
+      '/bookings/${Uri.encodeComponent(id)}/cancel',
     );
+    if (response is Map<String, dynamic>) {
+      _bookings[index] = BookingItem.fromMap(response);
+    } else {
+      _bookings[index] = booking.copyWith(status: BookingStatus.cancelled);
+    }
     notifyListeners();
   }
 
@@ -95,11 +118,23 @@ class BookingService extends ChangeNotifier {
       throw ArgumentError('Choose a future date for your service.');
     }
 
-    await ApiClient.instance.patch('/bookings/$id', {
-      'date': date.toIso8601String().split('T').first,
+    if (AuthService().currentUser == null) {
+      throw StateError('You must be signed in to reschedule a booking.');
+    }
+
+    final response = await ApiClient.instance.patch(
+      '/bookings/${Uri.encodeComponent(id)}',
+      {
+      'date': _dateOnly(date),
       'timeSlot': timeSlot,
-    });
-    _bookings[index] = booking.copyWith(date: date, timeSlot: timeSlot);
+      },
+    );
+    _bookings[index] = response is Map<String, dynamic>
+        ? BookingItem.fromMap(response)
+        : booking.copyWith(date: date, timeSlot: timeSlot);
     notifyListeners();
   }
+
+  static String _dateOnly(DateTime date) =>
+      '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 }

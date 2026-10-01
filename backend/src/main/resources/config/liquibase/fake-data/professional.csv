@@ -1,0 +1,3 @@
+id;display_name;photo_url;gender;onboarding_status;online;avg_rating;jobs_completed;cancellation_rate;last_lat;last_lng;last_location_at;joined_at;cash_in_hand;cash_limit;max_daily_jobs;languages;bank_account_enc;ifsc_code;deleted_at;created_at;updated_at;user_id;home_city_id
+1;rim soon;meh of showy;MALE;ACTIVE;true;4.98;5220;74.85;18750.47;13165.08;2026-09-30T12:49:28;2026-09-30T12:45:47;24320.36;9455.76;1837;divine;gah since;because;2026-10-01T04:28:40;2026-09-30T09:58:54;2026-09-30T14:38:10;1;1
+2;but;once circa;FEMALE;OFFBOARDED;false;2.44;17315;37.91;26866.63;4767.8;2026-10-01T00:27:21;2026-09-30T11:16:36;27052.64;15967.53;13705;splash;tomography er;maul cross-;2026-09-30T16:10:19;2026-10-01T02:49:47;2026-10-01T09:07:55;2;2

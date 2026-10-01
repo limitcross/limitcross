@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,10 +19,15 @@ class ApiClient {
   ApiClient._();
 
   static final ApiClient instance = ApiClient._();
-  static const String baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'http://localhost:8080/api',
-  );
+  static const String _configuredBaseUrl = String.fromEnvironment('API_BASE_URL');
+
+  static String get baseUrl {
+    if (_configuredBaseUrl.isNotEmpty) return _configuredBaseUrl;
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      return 'http://10.0.2.2:8080/api';
+    }
+    return 'http://localhost:8080/api';
+  }
   static const String _tokenKey = 'facility_access_token';
 
   String? _token;
@@ -45,6 +52,7 @@ class ApiClient {
   }
 
   Future<dynamic> get(String path) => _send('GET', path);
+  Future<dynamic> delete(String path) => _send('DELETE', path);
   Future<dynamic> post(String path, [Map<String, dynamic>? body]) => _send('POST', path, body);
 
   Future<dynamic> postValue(String path, dynamic body) => _sendValue('POST', path, body);
@@ -57,12 +65,20 @@ class ApiClient {
 
   Future<dynamic> _sendValue(String method, String path, dynamic body) async {
     final headers = <String, String>{'Content-Type': 'application/json'};
-    if (_token != null) headers['Authorization'] = 'Bearer $_token';
+    var token = _token;
+    try {
+      token = await FirebaseAuth.instance.currentUser?.getIdToken() ?? token;
+    } catch (_) {}
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
     final uri = Uri.parse('$baseUrl$path');
     late http.Response response;
     switch (method) {
       case 'GET':
         response = await http.get(uri, headers: headers);
+      case 'DELETE':
+        response = await http.delete(uri, headers: headers);
       case 'POST':
         response = await http.post(uri, headers: headers, body: jsonEncode(body));
       case 'PUT':

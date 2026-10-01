@@ -1,0 +1,11 @@
+id;code;description;discount_type;discount_value;max_discount;min_order_value;first_booking_only;total_usage_limit;per_user_limit;used_count;valid_from;valid_to;active
+1;contravene quaff;provided who doubtfully;PERCENT;9841.43;7626.04;32053.58;false;2252;16201;8794;2026-10-01T05:58:19;2026-09-30T16:23:45;false
+2;yippee healthily inasmuch;why promise;FLAT;5576.12;11240.95;22627.71;false;22749;11963;29902;2026-09-30T17:01:17;2026-10-01T02:52:19;false
+3;indeed role until;ick;FLAT;31823.04;12973.4;7787.49;false;25573;21066;28539;2026-09-30T17:36:25;2026-10-01T03:53:01;true
+4;entry oh;every parade;PERCENT;23330.68;29088.82;18771.15;false;15286;11366;8376;2026-10-01T01:19:13;2026-09-30T17:35:02;false
+5;lighthearted oof;aw quarrelsome;PERCENT;28550.09;31033.76;25375.68;true;24299;6708;6751;2026-10-01T01:18:46;2026-09-30T16:13:24;true
+6;categorise patiently;fruitful;FLAT;10061.91;6441.42;32500.62;true;18420;14598;11380;2026-10-01T05:17:47;2026-10-01T00:17:29;true
+7;ugh lest vice;immediately rarely;PERCENT;17644.39;13852.76;25029.24;false;27007;32416;7107;2026-10-01T06:08:41;2026-10-01T03:03:01;false
+8;upon;thongs incidentally hippodrome;PERCENT;19209.74;8130.32;24310.35;true;6385;29777;18519;2026-10-01T04:57:43;2026-09-30T14:46:18;true
+9;phew uh-huh reassemble;readjust drat;PERCENT;3436.42;19271.8;22668.64;true;18829;11517;6566;2026-09-30T13:09:47;2026-09-30T16:45:42;false
+10;officially throughout lighthea;immediate amazing intrigue;PERCENT;9209.11;13547.08;23685.76;true;29103;20166;14330;2026-09-30T09:55:52;2026-10-01T04:21:12;true

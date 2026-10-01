@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class UserProfile {
   const UserProfile({
     required this.uid,
@@ -18,12 +16,8 @@ class UserProfile {
   final DateTime lastLoginAt;
 
   factory UserProfile.fromMap(String uid, Map<String, dynamic> map) {
-    final createdAt = map['createdAt'] is Timestamp
-      ? (map['createdAt'] as Timestamp).toDate()
-      : DateTime.tryParse((map['createdAt'] ?? '').toString()) ?? DateTime.now();
-    final lastLoginAt = map['lastLoginAt'] is Timestamp
-      ? (map['lastLoginAt'] as Timestamp).toDate()
-      : DateTime.tryParse((map['lastLoginAt'] ?? '').toString()) ?? createdAt;
+    final createdAt = DateTime.tryParse((map['createdAt'] ?? '').toString()) ?? DateTime.now();
+    final lastLoginAt = DateTime.tryParse((map['lastLoginAt'] ?? '').toString()) ?? createdAt;
 
     return UserProfile(
       uid: uid,
@@ -41,8 +35,8 @@ class UserProfile {
       'phone': phone,
       'fullName': fullName,
       'email': email,
-      'createdAt': FieldValue.serverTimestamp(),
-      'lastLoginAt': FieldValue.serverTimestamp(),
+      'createdAt': createdAt.toIso8601String(),
+      'lastLoginAt': lastLoginAt.toIso8601String(),
     };
   }
 }

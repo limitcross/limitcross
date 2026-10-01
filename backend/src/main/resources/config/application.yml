@@ -190,13 +190,13 @@ jhipster:
   clientApp:
     name: 'facilityBackendApp'
   # By default CORS is disabled. Uncomment to enable.
-  # cors:
-  #   allowed-origins: "http://localhost:8100,http://localhost:9000"
-  #   allowed-methods: "*"
-  #   allowed-headers: "*"
-  #   exposed-headers: "Authorization,Link,X-Total-Count,X-${jhipster.clientApp.name}-alert,X-${jhipster.clientApp.name}-error,X-${jhipster.clientApp.name}-params"
-  #   allow-credentials: true
-  #   max-age: 1800
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5000}
+    allowed-methods: "*"
+    allowed-headers: "*"
+    exposed-headers: "Authorization,Link,X-Total-Count"
+    allow-credentials: false
+    max-age: 1800
   mail:
     from: FacilityBackend@localhost
   api-docs:
@@ -224,4 +224,8 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+facility:
+  firebase:
+    project-id: ${FIREBASE_PROJECT_ID:login-ui-test-2026}
+  credentials:
+    encryption-key: ${FACILITY_CREDENTIALS_ENCRYPTION_KEY:}

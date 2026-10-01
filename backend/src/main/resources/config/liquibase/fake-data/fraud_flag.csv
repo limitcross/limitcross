@@ -1,0 +1,11 @@
+id;entity_type;entity_id;rule_code;risk_score;status;details;created_at
+1;PAYMENT;mediocre;before;8908;CONFIRMED;../fake-data/blob/hipster.txt;2026-09-30T09:18:29
+2;USER;actual consequently;shocked;13739;CONFIRMED;../fake-data/blob/hipster.txt;2026-09-30T22:33:50
+3;PAYMENT;tenement;ocelot anti;25187;DISMISSED;../fake-data/blob/hipster.txt;2026-09-30T20:18:47
+4;USER;yearly on;yowza boohoo;19266;DISMISSED;../fake-data/blob/hipster.txt;2026-09-30T12:42:32
+5;PRO;joyously dreamily;general;17171;CONFIRMED;../fake-data/blob/hipster.txt;2026-09-30T12:08:23
+6;BOOKING;reorient softly amongst;annual woeful;1588;OPEN;../fake-data/blob/hipster.txt;2026-09-30T09:23:04
+7;PAYMENT;utterly nun ick;proofread deeply;177;DISMISSED;../fake-data/blob/hipster.txt;2026-09-30T10:22:14
+8;USER;airbus;fatally gah what;3184;CONFIRMED;../fake-data/blob/hipster.txt;2026-10-01T08:38:38
+9;USER;hairy insecure midst;yippee dramatic;12460;OPEN;../fake-data/blob/hipster.txt;2026-09-30T17:30:10
+10;BOOKING;encouragement excepting worth;commonly;10386;CONFIRMED;../fake-data/blob/hipster.txt;2026-10-01T07:36:17

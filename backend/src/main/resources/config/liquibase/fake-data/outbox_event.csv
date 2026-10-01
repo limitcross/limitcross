@@ -1,0 +1,11 @@
+id;aggregate_type;aggregate_id;event_type;payload;status;attempts;created_at;processed_at
+1;fraternise under lest;daintily reboot shakily;deserted pfft;../fake-data/blob/hipster.txt;NEW;24279;2026-09-30T12:38:28;2026-09-30T17:37:03
+2;forenenst even gosh;greedily pace below;language;../fake-data/blob/hipster.txt;FAILED;2132;2026-09-30T22:05:50;2026-10-01T07:23:47
+3;instead barring;drat for;disconnection hopelessly kinase;../fake-data/blob/hipster.txt;NEW;1562;2026-10-01T04:38:23;2026-09-30T10:37:24
+4;yesterday abaft;sizzling cassava above;convoke immaculate;../fake-data/blob/hipster.txt;NEW;31860;2026-09-30T21:41:53;2026-09-30T14:49:41
+5;curly cycle;fortunate term;after;../fake-data/blob/hipster.txt;NEW;14552;2026-09-30T16:51:37;2026-09-30T13:01:54
+6;across as;offend;fatally restfully;../fake-data/blob/hipster.txt;SENT;24233;2026-09-30T18:53:10;2026-09-30T13:31:08
+7;hastily snoop;properly supposing;boulevard;../fake-data/blob/hipster.txt;NEW;1552;2026-10-01T05:21:45;2026-09-30T18:00:49
+8;immediately awareness;clumsy versus;where reproachfully;../fake-data/blob/hipster.txt;FAILED;15241;2026-09-30T17:48:43;2026-09-30T13:15:33
+9;memorise;shy awkwardly;miserably barring;../fake-data/blob/hipster.txt;SENT;8237;2026-09-30T17:05:02;2026-10-01T08:18:02
+10;willfully;and except;label;../fake-data/blob/hipster.txt;SENT;27363;2026-09-30T21:20:48;2026-10-01T02:41:15

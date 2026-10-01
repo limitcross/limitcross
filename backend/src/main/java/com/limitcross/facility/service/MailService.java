@@ -35,6 +35,8 @@ public class MailService {
 
     private final JavaMailSender javaMailSender;
 
+    private final SmtpMailConfigurationService smtpMailConfigurationService;
+
     private final MessageSource messageSource;
 
     private final SpringTemplateEngine templateEngine;
@@ -42,11 +44,13 @@ public class MailService {
     public MailService(
         JHipsterProperties jHipsterProperties,
         JavaMailSender javaMailSender,
+        SmtpMailConfigurationService smtpMailConfigurationService,
         MessageSource messageSource,
         SpringTemplateEngine templateEngine
     ) {
         this.jHipsterProperties = jHipsterProperties;
         this.javaMailSender = javaMailSender;
+        this.smtpMailConfigurationService = smtpMailConfigurationService;
         this.messageSource = messageSource;
         this.templateEngine = templateEngine;
     }
@@ -67,14 +71,21 @@ public class MailService {
         );
 
         // Prepare message using a Spring helper
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        var configuration = smtpMailConfigurationService.findEnabled();
+        JavaMailSender sender = configuration
+            .map(smtpMailConfigurationService::createSender)
+            .map(JavaMailSender.class::cast)
+            .orElse(javaMailSender);
+        String fromAddress = configuration.map(com.limitcross.facility.domain.SmtpMailConfiguration::getFromAddress)
+            .orElse(jHipsterProperties.getMail().getFrom());
+        MimeMessage mimeMessage = sender.createMimeMessage();
         try {
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, StandardCharsets.UTF_8.name());
             message.setTo(to);
-            message.setFrom(jHipsterProperties.getMail().getFrom());
+            message.setFrom(fromAddress);
             message.setSubject(subject);
             message.setText(content, isHtml);
-            javaMailSender.send(mimeMessage);
+            sender.send(mimeMessage);
             LOG.debug("Sent email to User '{}'", to);
         } catch (MailException | MessagingException e) {
             LOG.warn("Email could not be sent to user '{}'", to, e);

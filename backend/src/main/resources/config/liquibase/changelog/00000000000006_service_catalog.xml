@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="00000000000006" author="limitcross">
+        <delete tableName="facility_service">
+            <where>id IN ('clean-home', 'beauty-women')</where>
+        </delete>
+        <loadUpdateData
+            file="config/liquibase/data/facility_service.csv"
+            relativeToChangelogFile="false"
+            tableName="facility_service"
+            primaryKey="id"
+            separator=","
+            quotchar="&quot;">
+            <column name="id" type="string"/>
+            <column name="title" type="string"/>
+            <column name="emoji" type="string"/>
+            <column name="category" type="string"/>
+            <column name="description" type="string"/>
+            <column name="price_range" type="string"/>
+            <column name="starting_price" type="numeric"/>
+            <column name="rating" type="numeric"/>
+            <column name="reviews_count" type="numeric"/>
+            <column name="duration" type="string"/>
+            <column name="highlights" type="string"/>
+            <column name="is_popular" type="boolean"/>
+        </loadUpdateData>
+    </changeSet>
+</databaseChangeLog>

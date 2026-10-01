@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../services/auth_service.dart';
-import '../services/backend_auth_service.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/mobile_frame.dart';
 
@@ -41,10 +40,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await BackendAuthService.instance.register(
+      await AuthService().signUpWithEmailAndPassword(
         email: _email.text.trim(),
         password: _password.text,
-        fullName: _name.text.trim(),
+        displayName: _name.text.trim(),
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

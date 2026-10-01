@@ -1,0 +1,11 @@
+id;channel;notification_type;title;body;data;status;created_at;sent_at;read_at;user_id
+1;WHATSAPP;robust opera;boohoo soon;gently;../fake-data/blob/hipster.txt;SENT;2026-09-30T20:06:57;2026-09-30T11:59:47;2026-09-30T21:35:28;1
+2;PUSH;upright;fast ouch;peaceful;../fake-data/blob/hipster.txt;READ;2026-09-30T23:20:56;2026-10-01T01:40:36;2026-10-01T01:39:08;2
+3;WHATSAPP;aw even;reproachfully;oh tangible;../fake-data/blob/hipster.txt;PENDING;2026-09-30T16:00:12;2026-09-30T21:17:22;2026-09-30T12:34:53;1
+4;EMAIL;that soup;save finally;likely;../fake-data/blob/hipster.txt;SENT;2026-09-30T17:00:32;2026-10-01T09:17:23;2026-10-01T01:19:54;2
+5;WHATSAPP;since including;gee blight;mortar;../fake-data/blob/hipster.txt;READ;2026-09-30T18:34:03;2026-09-30T12:19:27;2026-10-01T03:07:48;1
+6;EMAIL;fooey ha versus;recovery;throughout whoa entwine;../fake-data/blob/hipster.txt;READ;2026-09-30T13:45:25;2026-09-30T18:51:45;2026-09-30T18:46:47;1
+7;PUSH;bowler around kookily;phooey intently because;unbearably limp while;../fake-data/blob/hipster.txt;SENT;2026-09-30T22:47:50;2026-09-30T15:09:15;2026-09-30T22:47:43;2
+8;IN_APP;pop lanky confusion;motivate unless;potentially;../fake-data/blob/hipster.txt;FAILED;2026-09-30T17:26:37;2026-09-30T19:15:39;2026-09-30T22:10:51;2
+9;EMAIL;masticate;obnoxiously hence pants;however;../fake-data/blob/hipster.txt;PENDING;2026-10-01T07:14:28;2026-10-01T05:56:18;2026-09-30T15:03:15;1
+10;IN_APP;lumpy;between markup rally;whereas;../fake-data/blob/hipster.txt;SENT;2026-09-30T10:14:56;2026-09-30T12:18:52;2026-10-01T08:05:10;1

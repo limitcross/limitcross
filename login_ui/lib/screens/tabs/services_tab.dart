@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 import '../../models/service_item.dart';
-import '../../theme/app_theme.dart';
 import '../service_detail_screen.dart';
 import '../../services/booking_service.dart';
-import '../../services/api_client.dart';
+import '../../widgets/booking_sheet.dart';
 
 class ServicesTab extends StatefulWidget {
   final VoidCallback onNavigateToBookings;
 
-  const ServicesTab({super.key, required this.onNavigateToBookings});
+  const ServicesTab({
+    super.key,
+    required this.onNavigateToBookings,
+  });
 
   @override
   State<ServicesTab> createState() => _ServicesTabState();
@@ -18,92 +20,16 @@ class ServicesTab extends StatefulWidget {
 class _ServicesTabState extends State<ServicesTab> {
   ServiceCategory _selectedCategory = ServiceCategory.all;
   final TextEditingController _searchController = TextEditingController();
-  final PageController _heroController = PageController(viewportFraction: 0.92);
   String _searchQuery = '';
-  int _heroIndex = 0;
-  List<ServiceItem> _services = ServiceItem.allServices;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadServices();
-  }
-
-  Future<void> _loadServices() async {
-    try {
-      final response = await ApiClient.instance.get('/services') as List<dynamic>;
-      if (!mounted) return;
-      setState(() {
-        final apiServices = response
-            .map((item) => ServiceItem.fromApi(item as Map<String, dynamic>))
-            .toList();
-        final byId = {for (final item in ServiceItem.allServices) item.id: item};
-        for (final item in apiServices) {
-          byId[item.id] = item;
-        }
-        _services = byId.values.toList();
-      });
-    } catch (_) {
-      // Keep the bundled catalog available when the API is offline.
-    }
-  }
-
-  static const _slides = [
-    _ServiceSlide(
-      eyebrow: 'HOME MAINTENANCE',
-      title: 'Repairs, right at home.',
-      subtitle: 'Electricians, plumbing, AC and more.',
-      imageUrl:
-          'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1200&q=85',
-      category: ServiceCategory.homeMaintenance,
-      fallbackColor: Color(0xFF174B3D),
-    ),
-    _ServiceSlide(
-      eyebrow: 'CLEANING',
-      title: 'A cleaner start.',
-      subtitle: 'Find the right clean for your home.',
-      imageUrl:
-          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1200&q=85',
-      category: ServiceCategory.cleaning,
-      fallbackColor: Color(0xFF315E4B),
-    ),
-    _ServiceSlide(
-      eyebrow: 'BEAUTY & WELLNESS',
-      title: 'Care, on your terms.',
-      subtitle: 'Explore salon and wellness services.',
-      imageUrl:
-          'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?auto=format&fit=crop&w=1200&q=85',
-      category: ServiceCategory.beautyWomen,
-      fallbackColor: Color(0xFF704D57),
-    ),
-    _ServiceSlide(
-      eyebrow: 'EVERYDAY HELP',
-      title: 'More time for your day.',
-      subtitle: 'Browse home help and care services.',
-      imageUrl:
-          'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=85',
-      category: ServiceCategory.homeHelp,
-      fallbackColor: Color(0xFF57513A),
-    ),
-  ];
 
   @override
   void dispose() {
     _searchController.dispose();
-    _heroController.dispose();
     super.dispose();
   }
 
-  void _selectSlideCategory(_ServiceSlide slide) {
-    setState(() {
-      _selectedCategory = slide.category;
-      _searchController.clear();
-      _searchQuery = '';
-    });
-  }
-
   List<ServiceItem> get _filteredServices {
-    return _services.where((item) {
+    return ServiceItem.allServices.where((item) {
       final matchesCategory =
           _selectedCategory == ServiceCategory.all ||
           item.category == _selectedCategory;
@@ -119,7 +45,7 @@ class _ServicesTabState extends State<ServicesTab> {
     showModalBottomSheet<void>(
       context: context,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (ctx) {
         return SafeArea(
@@ -134,7 +60,7 @@ class _ServicesTabState extends State<ServicesTab> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.ink,
+                    color: Color(0xFF0F172A),
                   ),
                 ),
               ),
@@ -157,13 +83,13 @@ class _ServicesTabState extends State<ServicesTab> {
                       leading: Icon(
                         Icons.location_city_rounded,
                         color: isSelected
-                            ? AppTheme.seed
+                            ? const Color(0xFF4F46E5)
                             : Colors.grey,
                       ),
                       trailing: isSelected
                           ? const Icon(
                               Icons.check_circle,
-                              color: AppTheme.seed,
+                              color: Color(0xFF4F46E5),
                             )
                           : null,
                       onTap: () {
@@ -184,12 +110,12 @@ class _ServicesTabState extends State<ServicesTab> {
 
   @override
   Widget build(BuildContext context) {
-    final popularServices = _services
+    final popularServices = ServiceItem.allServices
         .where((s) => s.isPopular)
         .toList();
 
     return Scaffold(
-      backgroundColor: AppTheme.surface,
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -199,17 +125,36 @@ class _ServicesTabState extends State<ServicesTab> {
           children: [
             Row(
               children: [
-                Flexible(
-                  child: const Text(
-                    'Limitcross Facility',
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16,
-                      color: AppTheme.ink,
+                  Flexible(
+                    child: const Text(
+                      'Limitcross Facility',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16,
+                        color: Color(0xFF0F172A),
+                      ),
                     ),
                   ),
-                ),
+                  const SizedBox(width: 5),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 1,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4F46E5),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: const Text(
+                      'PRO',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
               ],
             ),
             InkWell(
@@ -220,7 +165,7 @@ class _ServicesTabState extends State<ServicesTab> {
                   const Icon(
                     Icons.location_on,
                     size: 14,
-                    color: AppTheme.seed,
+                    color: Color(0xFF4F46E5),
                   ),
                   const SizedBox(width: 3),
                   Text(
@@ -228,13 +173,13 @@ class _ServicesTabState extends State<ServicesTab> {
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: AppTheme.mutedInk,
+                      color: Color(0xFF475569),
                     ),
                   ),
                   const Icon(
                     Icons.keyboard_arrow_down,
                     size: 16,
-                    color: AppTheme.mutedInk,
+                    color: Color(0xFF475569),
                   ),
                 ],
               ),
@@ -288,165 +233,13 @@ class _ServicesTabState extends State<ServicesTab> {
                         vertical: 12,
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(14),
                         borderSide: BorderSide.none,
                       ),
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 190,
-                  child: PageView.builder(
-                    controller: _heroController,
-                    itemCount: _slides.length,
-                    onPageChanged: (index) => setState(() => _heroIndex = index),
-                    itemBuilder: (context, index) {
-                      final slide = _slides[index];
-                      final isActive = index == _heroIndex;
-                      return AnimatedScale(
-                        duration: const Duration(milliseconds: 220),
-                        scale: isActive ? 1 : 0.96,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 12, 8, 8),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                Image.network(
-                                  slide.imageUrl,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      ColoredBox(color: slide.fallbackColor),
-                                ),
-                                const DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                      colors: [
-                                        Color(0xD9162D26),
-                                        Color(0x15162D26),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 16,
-                                  right: 16,
-                                  bottom: 14,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        slide.eyebrow,
-                                        style: const TextStyle(
-                                          color: Color(0xFFD6F2E5),
-                                          fontSize: 9,
-                                          fontWeight: FontWeight.w700,
-                                          letterSpacing: 1.1,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        slide.title,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 21,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 3),
-                                      Text(
-                                        slide.subtitle,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.92,
-                                          ),
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 7),
-                                      SizedBox(
-                                        height: 30,
-                                        child: FilledButton.tonalIcon(
-                                          onPressed: () =>
-                                              _selectSlideCategory(slide),
-                                          icon: const Icon(
-                                            Icons.arrow_forward,
-                                            size: 15,
-                                          ),
-                                          label: const Text('Explore services'),
-                                          style: FilledButton.styleFrom(
-                                            backgroundColor: Colors.white,
-                                            foregroundColor:
-                                                const Color(0xFF173B32),
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                            ),
-                                            textStyle: const TextStyle(
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(_slides.length, (index) {
-                      final isActive = index == _heroIndex;
-                      return Semantics(
-                        button: true,
-                        label: 'Show slide ${index + 1} of ${_slides.length}',
-                        child: GestureDetector(
-                          onTap: () => _heroController.animateToPage(
-                            index,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                          ),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            width: isActive ? 22 : 7,
-                            height: 7,
-                            margin: const EdgeInsets.symmetric(horizontal: 3),
-                            decoration: BoxDecoration(
-                              color: isActive
-                                  ? const Color(0xFF176B57)
-                                  : const Color(0xFFC8D2CC),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-              ],
             ),
           ),
 
@@ -464,30 +257,33 @@ class _ServicesTabState extends State<ServicesTab> {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: FilterChip(
-                        avatar: Icon(cat.icon, size: 16),
+                        avatar: Text(
+                          cat.iconEmoji,
+                          style: const TextStyle(fontSize: 14),
+                        ),
                         label: Text(cat.label),
                         selected: isSelected,
                         onSelected: (val) {
                           setState(() => _selectedCategory = cat);
                         },
-                        selectedColor: AppTheme.seed,
+                        selectedColor: const Color(0xFF0F172A),
                         labelStyle: TextStyle(
                           color: isSelected
                               ? Colors.white
-                              : AppTheme.ink,
+                              : const Color(0xFF334155),
                           fontWeight: isSelected
                               ? FontWeight.bold
                               : FontWeight.w500,
                           fontSize: 12,
                         ),
-                        backgroundColor: AppTheme.surface,
+                        backgroundColor: const Color(0xFFF1F5F9),
                         showCheckmark: false,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(12),
                           side: BorderSide(
                             color: isSelected
-                                ? AppTheme.seed
-                                : AppTheme.border,
+                                ? const Color(0xFF0F172A)
+                                : const Color(0xFFE2E8F0),
                           ),
                         ),
                       ),
@@ -507,9 +303,9 @@ class _ServicesTabState extends State<ServicesTab> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: Text(
-                        'Popular in ${BookingService().currentCity}',
+                        '🔥 Trending & Most Booked',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -540,14 +336,11 @@ class _ServicesTabState extends State<ServicesTab> {
                   itemBuilder: (context, index) {
                     final s = popularServices[index];
                     return InkWell(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(16),
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute<void>(
-                            builder: (_) => ServiceDetailScreen(
-                              service: s,
-                              onBookingCreated: widget.onNavigateToBookings,
-                            ),
+                            builder: (_) => ServiceDetailScreen(service: s),
                           ),
                         );
                       },
@@ -557,8 +350,8 @@ class _ServicesTabState extends State<ServicesTab> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppTheme.border),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.03),
@@ -570,104 +363,111 @@ class _ServicesTabState extends State<ServicesTab> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Container(
-                                  width: 36,
-                                  height: 36,
-                                  decoration: BoxDecoration(
-                                    color: s.accentColor.withValues(
-                                      alpha: 0.12,
+                          Row(
+                            children: [
+                              Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: s.accentColor.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  s.emoji,
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                              ),
+                              const Spacer(),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.amber.shade50,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.star_rounded,
+                                      size: 14,
+                                      color: Colors.amber,
                                     ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Icon(
-                                    s.category.icon,
-                                    size: 19,
-                                    color: s.accentColor,
-                                  ),
-                                ),
-                                const Spacer(),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.amber.shade50,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Icon(
-                                        Icons.star_rounded,
-                                        size: 14,
-                                        color: Colors.amber,
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      '${s.rating}',
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      const SizedBox(width: 2),
-                                      Text(
-                                        '${s.rating}',
-                                        style: const TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              s.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                                color: Color(0xFF0F172A),
-                              ),
-                            ),
-                            Text(
-                              s.priceRange,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
-                                color: Color(0xFF10B981),
-                              ),
-                            ),
-                            const Spacer(),
-                            SizedBox(
-                              height: 30,
-                              width: double.infinity,
-                              child: FilledButton(
-                                onPressed: () => Navigator.of(context).push(
-                                  MaterialPageRoute<void>(
-                                    builder: (_) => ServiceDetailScreen(
-                                      service: s,
-                                      onBookingCreated:
-                                          widget.onNavigateToBookings,
                                     ),
-                                  ),
+                                  ],
                                 ),
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: const Color(0xFF0F172A),
-                                  padding: EdgeInsets.zero,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            s.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+                          Text(
+                            s.priceRange,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                              color: Color(0xFF10B981),
+                            ),
+                          ),
+                          const Spacer(),
+                          SizedBox(
+                            height: 30,
+                            width: double.infinity,
+                            child: FilledButton(
+                              onPressed: () async {
+                                final booked = await BookingSheet.show(
+                                  context,
+                                  s,
+                                );
+                                if (booked == true && context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '🎉 ${s.title} scheduled successfully!',
+                                      ),
+                                      action: SnackBarAction(
+                                        label: 'View',
+                                        onPressed: widget.onNavigateToBookings,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              style: FilledButton.styleFrom(
+                                backgroundColor: const Color(0xFF0F172A),
+                                padding: EdgeInsets.zero,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: const Text(
-                                  'Details',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              ),
+                              child: const Text(
+                                'Book',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
+                          ),
                           ],
                         ),
                       ),
@@ -739,14 +539,11 @@ class _ServicesTabState extends State<ServicesTab> {
                     delegate: SliverChildBuilderDelegate((context, index) {
                       final s = _filteredServices[index];
                       return InkWell(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(16),
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute<void>(
-                              builder: (_) => ServiceDetailScreen(
-                                service: s,
-                                onBookingCreated: widget.onNavigateToBookings,
-                              ),
+                              builder: (_) => ServiceDetailScreen(service: s),
                             ),
                           );
                         },
@@ -755,8 +552,8 @@ class _ServicesTabState extends State<ServicesTab> {
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: AppTheme.border),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: const Color(0xFFE2E8F0)),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withValues(alpha: 0.02),
@@ -768,131 +565,144 @@ class _ServicesTabState extends State<ServicesTab> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: s.accentColor.withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                alignment: Alignment.center,
-                                child: Icon(
-                                  s.category.icon,
-                                  size: 22,
-                                  color: s.accentColor,
-                                ),
+                            Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: s.accentColor.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(14),
                               ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            s.title,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15,
-                                              color: Color(0xFF0F172A),
-                                            ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                s.emoji,
+                                style: const TextStyle(fontSize: 24),
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          s.title,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                            color: Color(0xFF0F172A),
                                           ),
                                         ),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 6,
-                                            vertical: 2,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.amber.shade50,
-                                            borderRadius: BorderRadius.circular(
-                                              6,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(
-                                                Icons.star_rounded,
-                                                size: 14,
-                                                color: Colors.amber,
-                                              ),
-                                              const SizedBox(width: 2),
-                                              Text(
-                                                '${s.rating}',
-                                                style: const TextStyle(
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      s.description,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey.shade600,
                                       ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            s.priceRange,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: Color(0xFF059669),
-                                            ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.amber.shade50,
+                                          borderRadius: BorderRadius.circular(
+                                            6,
                                           ),
                                         ),
-                                        FilledButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute<void>(
-                                                  builder: (_) =>
-                                                      ServiceDetailScreen(
-                                                        service: s,
-                                                        onBookingCreated: widget
-                                                            .onNavigateToBookings,
-                                                      ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(
+                                              Icons.star_rounded,
+                                              size: 14,
+                                              color: Colors.amber,
+                                            ),
+                                            const SizedBox(width: 2),
+                                            Text(
+                                              '${s.rating}',
+                                              style: const TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    s.description,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          s.priceRange,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            color: Color(0xFF059669),
+                                          ),
+                                        ),
+                                      ),
+                                      FilledButton(
+                                        onPressed: () async {
+                                          final booked =
+                                              await BookingSheet.show(
+                                                context,
+                                                s,
+                                              );
+                                          if (booked == true &&
+                                              context.mounted) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  '🎉 ${s.title} scheduled!',
+                                                ),
+                                                action: SnackBarAction(
+                                                  label: 'View',
+                                                  onPressed: widget
+                                                      .onNavigateToBookings,
                                                 ),
                                               ),
-                                          style: FilledButton.styleFrom(
-                                            backgroundColor: const Color(
-                                              0xFF0F172A,
-                                            ),
-                                            minimumSize: const Size(72, 34),
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
+                                            );
+                                          }
+                                        },
+                                        style: FilledButton.styleFrom(
+                                          backgroundColor: const Color(
+                                            0xFF0F172A,
                                           ),
-                                          child: const Text(
-                                            'Details',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
+                                          minimumSize: const Size(72, 34),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                        child: const Text(
+                                          'Book',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
+                            ),
                             ],
                           ),
                         ),
@@ -904,22 +714,4 @@ class _ServicesTabState extends State<ServicesTab> {
       ),
     );
   }
-}
-
-class _ServiceSlide {
-  const _ServiceSlide({
-    required this.eyebrow,
-    required this.title,
-    required this.subtitle,
-    required this.imageUrl,
-    required this.category,
-    required this.fallbackColor,
-  });
-
-  final String eyebrow;
-  final String title;
-  final String subtitle;
-  final String imageUrl;
-  final ServiceCategory category;
-  final Color fallbackColor;
 }

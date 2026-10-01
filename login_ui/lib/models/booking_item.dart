@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum BookingStatus { requested, confirmed, inProgress, completed, cancelled }
+enum BookingStatus {
+  confirmed,
+  inProgress,
+  completed,
+  cancelled,
+}
 
 extension BookingStatusExt on BookingStatus {
   String get label {
     switch (this) {
-      case BookingStatus.requested:
-        return 'Request sent';
       case BookingStatus.confirmed:
         return 'Confirmed';
       case BookingStatus.inProgress:
@@ -41,9 +44,9 @@ class BookingItem {
     required this.date,
     required this.timeSlot,
     required this.address,
-    this.status = BookingStatus.requested,
-    this.assignedProName = 'Not assigned yet',
-    this.proRating = 0,
+    this.status = BookingStatus.confirmed,
+    this.assignedProName = 'Assigned professional',
+    this.proRating = 4.9,
     this.serviceFee = 49,
   });
 
@@ -52,8 +55,6 @@ class BookingItem {
 
   BookingItem copyWith({
     BookingStatus? status,
-    DateTime? date,
-    String? timeSlot,
   }) {
     return BookingItem(
       id: id,
@@ -61,8 +62,8 @@ class BookingItem {
       serviceTitle: serviceTitle,
       emoji: emoji,
       price: price,
-      date: date ?? this.date,
-      timeSlot: timeSlot ?? this.timeSlot,
+      date: date,
+      timeSlot: timeSlot,
       address: address,
       status: status ?? this.status,
       assignedProName: assignedProName,
@@ -93,29 +94,7 @@ class BookingItem {
       timeSlot: data['timeSlot'] as String? ?? '',
       address: data['address'] as String? ?? '',
       status: status,
-      assignedProName: data['assignedProName'] as String? ?? 'Not assigned yet',
-      proRating: (data['proRating'] as num?)?.toDouble() ?? 0,
-      serviceFee: (data['serviceFee'] as num?)?.toInt() ?? 49,
-    );
-  }
-
-  factory BookingItem.fromApi(Map<String, dynamic> data) {
-    final rawStatus = (data['status'] ?? 'requested').toString();
-    final status = BookingStatus.values.firstWhere(
-      (value) => value.name == rawStatus.toLowerCase(),
-      orElse: () => BookingStatus.requested,
-    );
-    return BookingItem(
-      id: (data['id'] ?? '').toString(),
-      serviceId: (data['serviceId'] ?? '').toString(),
-      serviceTitle: (data['serviceTitle'] ?? 'Service').toString(),
-      emoji: (data['emoji'] ?? '🛠️').toString(),
-      price: (data['price'] as num?)?.toInt() ?? 0,
-      date: DateTime.parse(data['date'].toString()),
-      timeSlot: (data['timeSlot'] ?? '').toString(),
-      address: (data['address'] ?? '').toString(),
-      status: status,
-      assignedProName: (data['assignedProName'] ?? 'Not assigned yet').toString(),
+      assignedProName: data['assignedProName'] as String? ?? 'Assigned professional',
       proRating: (data['proRating'] as num?)?.toDouble() ?? 0,
       serviceFee: (data['serviceFee'] as num?)?.toInt() ?? 49,
     );

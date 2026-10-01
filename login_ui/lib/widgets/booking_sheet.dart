@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/service_item.dart';
-import '../services/backend_auth_service.dart';
+import '../services/auth_service.dart';
 import '../services/booking_service.dart';
 
 class BookingSheet extends StatefulWidget {
@@ -71,7 +71,7 @@ class _BookingSheetState extends State<BookingSheet> {
   }
 
   Future<void> _submitBooking() async {
-    if (BackendAuthService.instance.currentUser == null) {
+    if (AuthService().currentUser == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

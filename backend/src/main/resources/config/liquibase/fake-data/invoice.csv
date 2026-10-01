@@ -1,0 +1,11 @@
+id;invoice_no;invoice_type;customer_gstin;seller_gstin;place_of_supply;taxable_amount;cgst;sgst;igst;total_amount;pdf_url;issued_at;customer_id;booking_id
+1;than circular supposing;TAX_INVOICE;quick;provided sophis;partially gullible;13811.6;12594.71;22420.94;6202.48;10650.54;uh-huh via failing;2026-09-30T19:01:02;1;1
+2;suspiciously past veg;TAX_INVOICE;scoff colorfull;retention bicyc;including whose unless;934.09;189.82;6778.08;12604.4;16661.52;the geez;2026-09-30T09:34:46;2;2
+3;through which;TAX_INVOICE;cassava;important;psst mixed;20440.57;24052.51;26930.48;26957.49;2393.52;gad which bravely;2026-10-01T02:09:51;1;3
+4;when;TAX_INVOICE;printer;generously abou;after;1252.29;11279.52;22673.7;24854.48;30538.29;before since marksman;2026-09-30T20:08:42;1;4
+5;fabricate variable ugh;TAX_INVOICE;amongst aside o;easily for;any;24258.83;14292.02;21260.03;1011.64;9226.53;alongside;2026-10-01T01:08:48;1;5
+6;between;CREDIT_NOTE;till defendant;gee outgoing st;gown;20849.62;30243.9;5050.48;31605.9;10114.33;robust barring;2026-09-30T23:44:34;2;6
+7;vice challenge aha;TAX_INVOICE;married;lest including;intrigue gadzooks that;11909.91;11421.44;13425.95;13542.68;25373.77;unkempt;2026-09-30T23:04:20;1;7
+8;bah;CREDIT_NOTE;even;where;sham amid homeschool;5309.28;29950.39;4088;7504.57;10471.77;juggernaut even;2026-09-30T18:41:52;2;8
+9;hawk bob drat;TAX_INVOICE;what;back;consequently whoever finding;27534.37;25468.43;31813.48;27448.33;25825.51;outset;2026-09-30T16:40:14;2;9
+10;flawless personal;CREDIT_NOTE;till once inwar;perp pleasing;ultimately appropriate disk;4023.27;16821.11;11252.99;16479.68;9019.39;buck broadly;2026-09-30T18:22:10;1;10

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity Booking.
+    -->
+    <changeSet id="20261001091744-1" author="jhipster">
+        <createTable tableName="booking">
+            <column name="id" type="bigint" autoIncrement="true" startWith="1500">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="booking_no" type="varchar(20)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_booking__booking_no" />
+            </column>
+            <column name="public_id" type="${uuidType}">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_booking__public_id" />
+            </column>
+            <column name="service_title" type="varchar(120)">
+                <constraints nullable="false" />
+            </column>
+            <column name="address_snapshot" type="${clobType}">
+                <constraints nullable="false" />
+            </column>
+            <column name="scheduled_start" type="${datetimeType}">
+                <constraints nullable="false" />
+            </column>
+            <column name="scheduled_end" type="${datetimeType}">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="payment_status" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="payment_mode" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="currency" type="varchar(3)">
+                <constraints nullable="false" />
+            </column>
+            <column name="subtotal" type="decimal(21,2)">
+                <constraints nullable="false" />
+            </column>
+            <column name="addon_total" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="discount_amount" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="service_fee" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="tax_amount" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="tip_amount" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="total_amount" type="decimal(21,2)">
+                <constraints nullable="false" />
+            </column>
+            <column name="customer_notes" type="varchar(500)">
+                <constraints nullable="true" />
+            </column>
+            <column name="start_otp" type="varchar(6)">
+                <constraints nullable="true" />
+            </column>
+            <column name="cancelled_by" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="cancel_reason" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="source" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="wallet_amount_used" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="loyalty_points_used" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="cancellation_fee" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="reschedule_count" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="platform_commission" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="pro_earning" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="arrival_eta" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="priority" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="started_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="completed_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="cancelled_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="created_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="updated_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="customer_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="service_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="city_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="address_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="professional_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="coupon_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="subscription_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="slot_capacity_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+        <dropDefaultValue tableName="booking" columnName="scheduled_start" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="booking" columnName="scheduled_end" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="booking" columnName="arrival_eta" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="booking" columnName="started_at" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="booking" columnName="completed_at" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="booking" columnName="cancelled_at" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="booking" columnName="created_at" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="booking" columnName="updated_at" columnDataType="${datetimeType}"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+
+    <!--
+        Load sample data generated with Faker.js
+        - This data can be easily edited using a CSV editor (or even MS Excel) and
+          is located in the 'src/main/resources/config/liquibase/fake-data' directory
+        - By default this data is applied when running with the JHipster 'dev' profile.
+          This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
+          Spring Boot configuration key.
+    -->
+    <changeSet id="20261001091744-1-data" author="jhipster" context="faker">
+        <loadData
+                  file="config/liquibase/fake-data/booking.csv"
+                  separator=";"
+                  tableName="booking"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="booking_no" type="string"/>
+            <column name="public_id" type="string"/>
+            <column name="service_title" type="string"/>
+            <column name="address_snapshot" type="clob"/>
+            <column name="scheduled_start" type="date"/>
+            <column name="scheduled_end" type="date"/>
+            <column name="status" type="string"/>
+            <column name="payment_status" type="string"/>
+            <column name="payment_mode" type="string"/>
+            <column name="currency" type="string"/>
+            <column name="subtotal" type="numeric"/>
+            <column name="addon_total" type="numeric"/>
+            <column name="discount_amount" type="numeric"/>
+            <column name="service_fee" type="numeric"/>
+            <column name="tax_amount" type="numeric"/>
+            <column name="tip_amount" type="numeric"/>
+            <column name="total_amount" type="numeric"/>
+            <column name="customer_notes" type="string"/>
+            <column name="start_otp" type="string"/>
+            <column name="cancelled_by" type="string"/>
+            <column name="cancel_reason" type="string"/>
+            <column name="source" type="string"/>
+            <column name="wallet_amount_used" type="numeric"/>
+            <column name="loyalty_points_used" type="numeric"/>
+            <column name="cancellation_fee" type="numeric"/>
+            <column name="reschedule_count" type="numeric"/>
+            <column name="platform_commission" type="numeric"/>
+            <column name="pro_earning" type="numeric"/>
+            <column name="arrival_eta" type="date"/>
+            <column name="priority" type="boolean"/>
+            <column name="started_at" type="date"/>
+            <column name="completed_at" type="date"/>
+            <column name="cancelled_at" type="date"/>
+            <column name="created_at" type="date"/>
+            <column name="updated_at" type="date"/>
+            <column name="customer_id" type="numeric"/>
+            <column name="service_id" type="numeric"/>
+            <column name="city_id" type="numeric"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

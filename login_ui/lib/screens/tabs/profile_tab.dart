@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import '../../services/backend_auth_service.dart';
+import '../../services/auth_service.dart';
 import '../../services/booking_service.dart';
 import '../support_screen.dart';
 
@@ -11,8 +13,13 @@ class ProfileTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = BackendAuthService.instance.currentUser;
-    final displayName = user?.fullName.isNotEmpty == true ? user!.fullName : 'Limitcross Customer';
+    User? user;
+    try {
+      if (Firebase.apps.isNotEmpty) {
+        user = FirebaseAuth.instance.currentUser;
+      }
+    } catch (_) {}
+    final displayName = user?.displayName ?? 'Limitcross Customer';
     final email = user?.email ?? 'guest.user@limitcrossfacility.com';
 
     return Scaffold(
@@ -201,7 +208,7 @@ class ProfileTab extends StatelessWidget {
           // Sign Out Button
           FilledButton.icon(
             onPressed: () async {
-              await BackendAuthService.instance.signOut();
+              await AuthService().signOut();
               onSignOut();
             },
             icon: const Icon(Icons.logout_rounded, size: 18),
@@ -217,7 +224,7 @@ class ProfileTab extends StatelessWidget {
           const SizedBox(height: 16),
           const Center(
             child: Text(
-              'Limitcross Facility • v1.0.0 (Spring Boot & MySQL)',
+              'Limitcross Facility • v1.0.0 (Flutter & Firebase)',
               style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
             ),
           ),

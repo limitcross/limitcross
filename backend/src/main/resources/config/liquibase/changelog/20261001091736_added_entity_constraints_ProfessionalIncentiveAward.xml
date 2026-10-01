@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity ProfessionalIncentiveAward.
+    -->
+    <changeSet id="20261001091736-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="professional_id"
+                                 baseTableName="professional_incentive_award"
+                                 constraintName="fk_professional_incentive_award__professional_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="professional"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="rule_id"
+                                 baseTableName="professional_incentive_award"
+                                 constraintName="fk_professional_incentive_award__rule_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="incentive_rule"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="wallet_transaction_id"
+                                 baseTableName="professional_incentive_award"
+                                 constraintName="fk_professional_incentive_award__wallet_transaction_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="wallet_transaction"
+                                 />
+    </changeSet>
+</databaseChangeLog>

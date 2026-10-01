@@ -5,22 +5,16 @@ import '../widgets/booking_sheet.dart';
 import '../widgets/mobile_frame.dart';
 
 class ServiceDetailScreen extends StatelessWidget {
-  const ServiceDetailScreen({
-    super.key,
-    required this.service,
-    this.onBookingCreated,
-  });
+  const ServiceDetailScreen({super.key, required this.service});
 
   final ServiceItem service;
-  final VoidCallback? onBookingCreated;
 
   Future<void> _book(BuildContext context) async {
     final booked = await BookingSheet.show(context, service);
     if (booked == true && context.mounted) {
-      onBookingCreated?.call();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${service.title} request sent'),
+          content: Text('${service.title} scheduled successfully'),
           action: SnackBarAction(
             label: 'View bookings',
             onPressed: () => Navigator.of(context).pop(),
@@ -74,10 +68,7 @@ class ServiceDetailScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(18),
                         ),
                         alignment: Alignment.center,
-                        child: Text(
-                          service.emoji,
-                          style: const TextStyle(fontSize: 32),
-                        ),
+                        child: Text(service.emoji, style: const TextStyle(fontSize: 32)),
                       ),
                       const Spacer(),
                       _RatingPill(rating: service.rating),
@@ -107,20 +98,11 @@ class ServiceDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                _InfoTile(
-                  icon: Icons.schedule_outlined,
-                  label: service.duration,
-                ),
+                _InfoTile(icon: Icons.schedule_outlined, label: service.duration),
                 const SizedBox(width: 10),
-                _InfoTile(
-                  icon: Icons.payments_outlined,
-                  label: 'From ₹${service.startingPrice}',
-                ),
+                _InfoTile(icon: Icons.payments_outlined, label: 'From ₹${service.startingPrice}'),
                 const SizedBox(width: 10),
-                _InfoTile(
-                  icon: Icons.reviews_outlined,
-                  label: '${service.reviewsCount} reviews',
-                ),
+                _InfoTile(icon: Icons.reviews_outlined, label: '${service.reviewsCount} reviews'),
               ],
             ),
             const SizedBox(height: 24),
@@ -132,19 +114,12 @@ class ServiceDetailScreen extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.check_circle_rounded,
-                      color: colors.primary,
-                      size: 20,
-                    ),
+                    Icon(Icons.check_circle_rounded, color: colors.primary, size: 20),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         highlight,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF334155),
-                        ),
+                        style: const TextStyle(fontSize: 14, color: Color(0xFF334155)),
                       ),
                     ),
                   ],
@@ -156,33 +131,33 @@ class ServiceDetailScreen extends StatelessWidget {
             const SizedBox(height: 10),
             const _StepRow(
               number: '01',
-              title: 'Choose a service window',
-              description: 'Select a date, time window and service address.',
+              title: 'Choose a convenient slot',
+              description: 'Pick a date and time that works for you.',
             ),
             const _StepRow(
               number: '02',
-              title: 'Send your booking request',
-              description: 'Your requested estimate and schedule are saved to your account.',
+              title: 'Meet your verified professional',
+              description: 'Track the visit and get live service updates.',
             ),
             const _StepRow(
               number: '03',
-              title: 'Follow the request',
-              description: 'View, reschedule or cancel eligible requests in My Bookings.',
+              title: 'Pay after the service',
+              description: 'Review the work before completing payment.',
             ),
             const SizedBox(height: 14),
             const _SectionTitle(title: 'Frequently asked'),
             const SizedBox(height: 8),
             const _FaqTile(
               question: 'Can I reschedule my booking?',
-              answer: 'You can change the date and time while a request is awaiting confirmation or confirmed.',
+              answer: 'Yes. Open My Bookings and choose a new available slot before the professional arrives.',
             ),
             const _FaqTile(
-              question: 'Where can I see appointment updates?',
-              answer: 'Open My Bookings to see the latest request status and scheduled service details.',
+              question: 'Are the professionals verified?',
+              answer: 'Every professional is identity checked and trained for the services they provide.',
             ),
             const _FaqTile(
               question: 'When will I know the final price?',
-              answer: 'The amount shown is a starting estimate. Confirm the final scope and price before work begins.',
+              answer: 'You will see an estimate before booking. Any additional work is confirmed with you first.',
             ),
           ],
         ),
@@ -190,7 +165,7 @@ class ServiceDetailScreen extends StatelessWidget {
           minimum: const EdgeInsets.fromLTRB(16, 10, 16, 12),
           child: FilledButton(
             onPressed: () => _book(context),
-            child: Text('Request service · from ₹${service.startingPrice}'),
+            child: Text('Book from ${service.priceRange}'),
           ),
         ),
       ),
@@ -216,13 +191,7 @@ class _RatingPill extends StatelessWidget {
         children: [
           const Icon(Icons.star_rounded, color: Colors.white, size: 17),
           const SizedBox(width: 4),
-          Text(
-            '$rating',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+          Text('$rating', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
         ],
       ),
     );
@@ -254,11 +223,7 @@ class _InfoTile extends StatelessWidget {
               maxLines: 2,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 11,
-                color: Color(0xFF475569),
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 11, color: Color(0xFF475569), fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -274,20 +239,12 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.titleMedium
-          ?.copyWith(fontWeight: FontWeight.w800),
-    );
+    return Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800));
   }
 }
 
 class _StepRow extends StatelessWidget {
-  const _StepRow({
-    required this.number,
-    required this.title,
-    required this.description,
-  });
+  const _StepRow({required this.number, required this.title, required this.description});
 
   final String number;
   final String title;
@@ -308,35 +265,16 @@ class _StepRow extends StatelessWidget {
               color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Text(
-              number,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
+            child: Text(number, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.primary)),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF0F172A),
-                  ),
-                ),
+                Text(title, style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
                 const SizedBox(height: 2),
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF64748B),
-                  ),
-                ),
+                Text(description, style: const TextStyle(fontSize: 12, color: Color(0xFF64748B))),
               ],
             ),
           ),
@@ -364,21 +302,11 @@ class _FaqTile extends StatelessWidget {
       child: ExpansionTile(
         tilePadding: const EdgeInsets.symmetric(horizontal: 14),
         childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-        title: Text(
-          question,
-          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-        ),
+        title: Text(question, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              answer,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Color(0xFF64748B),
-                height: 1.4,
-              ),
-            ),
+            child: Text(answer, style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), height: 1.4)),
           ),
         ],
       ),

@@ -1,0 +1,11 @@
+id;txn_type;amount;balance_after;description;created_at;professional_id
+1;PENALTY;20867.51;24419.02;yarmulke;2026-10-01T05:35:21;1
+2;PAYOUT;6856.64;11272.77;inferior inwardly;2026-10-01T08:53:43;2
+3;CASH_COLLECTED;10045.31;31816.55;bar when gently;2026-09-30T16:59:34;2
+4;PENALTY;7908.88;31506.02;beside victoriously whose;2026-09-30T15:01:49;1
+5;EARNING;13334.03;23071.85;given boohoo really;2026-09-30T10:03:07;1
+6;EARNING;8990.3;23652.67;whereas vainly;2026-09-30T09:32:13;2
+7;PENALTY;23556.16;21931.75;sympathetically onto;2026-10-01T06:22:40;1
+8;EARNING;26942.34;5230.33;whereas heavy kettledrum;2026-09-30T20:54:02;2
+9;PAYOUT;127.31;13862.92;geez;2026-10-01T00:05:45;2
+10;PENALTY;26124.4;30814.67;aw terrorise gadzooks;2026-09-30T10:52:01;2

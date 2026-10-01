@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="00000000000011" author="limitcross">
+        <createTable tableName="smtp_mail_configuration">
+            <column name="id" type="bigint"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="host" type="varchar(255)"><constraints nullable="false"/></column>
+            <column name="port" type="int"><constraints nullable="false"/></column>
+            <column name="username" type="varchar(255)"/>
+            <column name="password_ciphertext" type="varchar(4096)"/>
+            <column name="from_address" type="varchar(254)"><constraints nullable="false"/></column>
+            <column name="auth_enabled" type="boolean" defaultValueBoolean="false"><constraints nullable="false"/></column>
+            <column name="starttls_enabled" type="boolean" defaultValueBoolean="true"><constraints nullable="false"/></column>
+            <column name="ssl_enabled" type="boolean" defaultValueBoolean="false"><constraints nullable="false"/></column>
+            <column name="enabled" type="boolean" defaultValueBoolean="false"><constraints nullable="false"/></column>
+            <column name="updated_at" type="timestamp"><constraints nullable="false"/></column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -107,25 +107,39 @@ class ServiceItem {
     this.accentColor = const Color(0xFF4F46E5),
   });
 
-  factory ServiceItem.fromApi(Map<String, dynamic> data) {
-    final categoryName = (data['category'] ?? 'homeMaintenance').toString();
+  factory ServiceItem.fromMap(Map<String, dynamic> map) {
+    final categoryName = map['category']?.toString();
     final category = ServiceCategory.values.firstWhere(
       (value) => value.name == categoryName,
       orElse: () => ServiceCategory.homeMaintenance,
     );
+    final rawHighlights = map['highlights'];
+    final highlights = rawHighlights is List
+        ? rawHighlights.map((value) => value.toString()).toList()
+        : <String>[];
+
     return ServiceItem(
-      id: data['id'].toString(),
-      title: data['title'].toString(),
-      emoji: data['emoji'].toString(),
+      id: map['id']?.toString() ?? '',
+      title: map['title']?.toString() ?? 'Service',
+      emoji: map['emoji']?.toString() ?? '🛠️',
       category: category,
-      description: data['description'].toString(),
-      priceRange: data['priceRange'].toString(),
-      startingPrice: (data['startingPrice'] as num).toInt(),
-      rating: (data['rating'] as num?)?.toDouble() ?? 0,
-      reviewsCount: (data['reviewsCount'] as num?)?.toInt() ?? 0,
-      duration: data['duration'].toString(),
-      highlights: (data['highlights'] as List<dynamic>? ?? const []).map((item) => item.toString()).toList(),
-      isPopular: data['isPopular'] == true,
+      description: map['description']?.toString() ?? '',
+      priceRange: map['priceRange']?.toString() ?? '',
+      startingPrice: (map['startingPrice'] as num?)?.toInt() ?? 0,
+      rating: (map['rating'] as num?)?.toDouble() ?? 0,
+      reviewsCount: (map['reviewsCount'] as num?)?.toInt() ?? 0,
+      duration: map['duration']?.toString() ?? '',
+      highlights: highlights,
+      isPopular: map['isPopular'] == true,
+      accentColor: switch (category) {
+        ServiceCategory.cleaning => const Color(0xFF176B57),
+        ServiceCategory.beautyWomen => const Color(0xFF9A4B5A),
+        ServiceCategory.mensGrooming => const Color(0xFF425466),
+        ServiceCategory.homeHelp => const Color(0xFF88753D),
+        ServiceCategory.healthAtHome => const Color(0xFF316B83),
+        ServiceCategory.nativeProducts => const Color(0xFF557387),
+        _ => const Color(0xFF176B57),
+      },
     );
   }
 

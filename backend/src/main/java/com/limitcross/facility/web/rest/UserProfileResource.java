@@ -1,66 +1,188 @@
 package com.limitcross.facility.web.rest;
 
-import com.limitcross.facility.domain.User;
-import com.limitcross.facility.repository.UserRepository;
-import com.limitcross.facility.security.SecurityUtils;
+import com.limitcross.facility.repository.UserProfileRepository;
+import com.limitcross.facility.service.UserProfileService;
+import com.limitcross.facility.service.dto.UserProfileDTO;
+import com.limitcross.facility.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import java.time.Instant;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
+import jakarta.validation.constraints.NotNull;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
+import tech.jhipster.web.util.ResponseUtil;
 
+/**
+ * REST controller for managing {@link com.limitcross.facility.domain.UserProfile}.
+ */
 @RestController
-@RequestMapping("/api/users/me")
+@RequestMapping("/api/user-profiles")
 public class UserProfileResource {
 
-    private final UserRepository userRepository;
+    private static final Logger LOG = LoggerFactory.getLogger(UserProfileResource.class);
 
-    public UserProfileResource(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    private static final String ENTITY_NAME = "userProfile";
+
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    private final UserProfileService userProfileService;
+
+    private final UserProfileRepository userProfileRepository;
+
+    public UserProfileResource(UserProfileService userProfileService, UserProfileRepository userProfileRepository) {
+        this.userProfileService = userProfileService;
+        this.userProfileRepository = userProfileRepository;
     }
 
-    @GetMapping
-    public ProfileResponse getProfile() {
-        return toResponse(currentUser());
+    /**
+     * {@code POST  /user-profiles} : Create a new userProfile.
+     *
+     * @param userProfileDTO the userProfileDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new userProfileDTO, or with status {@code 400 (Bad Request)} if the userProfile has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PostMapping("")
+    public ResponseEntity<UserProfileDTO> createUserProfile(@Valid @RequestBody UserProfileDTO userProfileDTO) throws URISyntaxException {
+        LOG.debug("REST request to save UserProfile : {}", userProfileDTO);
+        if (userProfileDTO.getId() != null) {
+            throw new BadRequestAlertException("A new userProfile cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        userProfileDTO = userProfileService.save(userProfileDTO);
+        return ResponseEntity.created(new URI("/api/user-profiles/" + userProfileDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, userProfileDTO.getId().toString()))
+            .body(userProfileDTO);
     }
 
-    @PutMapping
-    public ProfileResponse updateProfile(@Valid @RequestBody UpdateProfileRequest request) {
-        User user = currentUser();
-        String[] name = request.fullName().trim().split("\\s+", 2);
-        user.setFirstName(name[0]);
-        user.setLastName(name.length > 1 ? name[1] : "");
-        user.setEmail(request.email().trim().toLowerCase());
-        user.setPhone(request.phone() == null ? null : request.phone().trim());
-        return toResponse(userRepository.save(user));
+    /**
+     * {@code PUT  /user-profiles/:id} : Updates an existing userProfile.
+     *
+     * @param id the id of the userProfileDTO to save.
+     * @param userProfileDTO the userProfileDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated userProfileDTO,
+     * or with status {@code 400 (Bad Request)} if the userProfileDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the userProfileDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<UserProfileDTO> updateUserProfile(
+        @PathVariable(value = "id", required = false) final Long id,
+        @Valid @RequestBody UserProfileDTO userProfileDTO
+    ) throws URISyntaxException {
+        LOG.debug("REST request to update UserProfile : {}, {}", id, userProfileDTO);
+        if (userProfileDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        if (!Objects.equals(id, userProfileDTO.getId())) {
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+        }
+
+        if (!userProfileRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+
+        userProfileDTO = userProfileService.update(userProfileDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, userProfileDTO.getId().toString()))
+            .body(userProfileDTO);
     }
 
-    private User currentUser() {
-        String login = SecurityUtils.getCurrentUserLogin().orElseThrow(() ->
-            new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required"));
-        return userRepository.findOneByLogin(login).orElseThrow(() ->
-            new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    /**
+     * {@code PATCH  /user-profiles/:id} : Partial updates given fields of an existing userProfile, field will ignore if it is null
+     *
+     * @param id the id of the userProfileDTO to save.
+     * @param userProfileDTO the userProfileDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated userProfileDTO,
+     * or with status {@code 400 (Bad Request)} if the userProfileDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the userProfileDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the userProfileDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    public ResponseEntity<UserProfileDTO> partialUpdateUserProfile(
+        @PathVariable(value = "id", required = false) final Long id,
+        @NotNull @RequestBody UserProfileDTO userProfileDTO
+    ) throws URISyntaxException {
+        LOG.debug("REST request to partial update UserProfile partially : {}, {}", id, userProfileDTO);
+        if (userProfileDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        if (!Objects.equals(id, userProfileDTO.getId())) {
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+        }
+
+        if (!userProfileRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+
+        Optional<UserProfileDTO> result = userProfileService.partialUpdate(userProfileDTO);
+
+        return ResponseUtil.wrapOrNotFound(
+            result,
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, userProfileDTO.getId().toString())
+        );
     }
 
-    private static ProfileResponse toResponse(User user) {
-        String fullName = ((user.getFirstName() == null ? "" : user.getFirstName()) + " " +
-            (user.getLastName() == null ? "" : user.getLastName())).trim();
-        Instant createdAt = user.getCreatedDate();
-        return new ProfileResponse(user.getLogin(), user.getPhone(), fullName, user.getEmail(), createdAt, user.getLastModifiedDate());
+    /**
+     * {@code GET  /user-profiles} : get all the userProfiles.
+     *
+     * @param pageable the pagination information.
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of userProfiles in body.
+     */
+    @GetMapping("")
+    public ResponseEntity<List<UserProfileDTO>> getAllUserProfiles(
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
+        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
+    ) {
+        LOG.debug("REST request to get a page of UserProfiles");
+        Page<UserProfileDTO> page;
+        if (eagerload) {
+            page = userProfileService.findAllWithEagerRelationships(pageable);
+        } else {
+            page = userProfileService.findAll(pageable);
+        }
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    public record UpdateProfileRequest(
-        @NotBlank @Size(max = 100) String fullName,
-        @NotBlank @Email @Size(min = 5, max = 254) String email,
-        @Size(max = 30) String phone
-    ) {}
+    /**
+     * {@code GET  /user-profiles/:id} : get the "id" userProfile.
+     *
+     * @param id the id of the userProfileDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the userProfileDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable("id") Long id) {
+        LOG.debug("REST request to get UserProfile : {}", id);
+        Optional<UserProfileDTO> userProfileDTO = userProfileService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(userProfileDTO);
+    }
 
-    public record ProfileResponse(String uid, String phone, String fullName, String email, Instant createdAt, Instant lastLoginAt) {}
+    /**
+     * {@code DELETE  /user-profiles/:id} : delete the "id" userProfile.
+     *
+     * @param id the id of the userProfileDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserProfile(@PathVariable("id") Long id) {
+        LOG.debug("REST request to delete UserProfile : {}", id);
+        userProfileService.delete(id);
+        return ResponseEntity.noContent()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
+            .build();
+    }
 }

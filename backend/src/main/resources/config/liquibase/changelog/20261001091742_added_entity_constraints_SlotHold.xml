@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity SlotHold.
+    -->
+    <changeSet id="20261001091742-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="slot_hold"
+                                 constraintName="fk_slot_hold__user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="slot_capacity_id"
+                                 baseTableName="slot_hold"
+                                 constraintName="fk_slot_hold__slot_capacity_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="slot_capacity"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="booking_id"
+                                 baseTableName="slot_hold"
+                                 constraintName="fk_slot_hold__booking_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="booking"
+                                 />
+    </changeSet>
+</databaseChangeLog>

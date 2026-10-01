@@ -1,0 +1,11 @@
+id;gateway;gateway_order_id;gateway_payment_id;payment_method;amount;currency;status;idempotency_key;failure_reason;raw_response;created_at;updated_at;booking_id
+1;WALLET;save range;upbeat king;into label outsource;3449.5;wit;CAPTURED;in instead um;ick;../fake-data/blob/hipster.txt;2026-09-30T15:32:23;2026-09-30T15:22:15;1
+2;CASH;another purse without;access drowse phew;potentially;16991.74;mom;FAILED;hasty;hm vein why;../fake-data/blob/hipster.txt;2026-09-30T19:16:06;2026-09-30T10:27:16;2
+3;WALLET;stingy;exasperation psst;meanwhile;6669.25;whi;AUTHORIZED;tightly hospitable questionably;peppery both formamide;../fake-data/blob/hipster.txt;2026-10-01T06:52:23;2026-09-30T19:47:48;3
+4;CASH;fair;blah;shallow boo barring;8227.68;aff;CREATED;defrag offset;fooey yet because;../fake-data/blob/hipster.txt;2026-09-30T13:48:34;2026-09-30T19:08:59;4
+5;CASHFREE;apropos more round;smoothly;oh yowza except;23915.63;ser;CAPTURED;optimistic;lively;../fake-data/blob/hipster.txt;2026-09-30T11:41:14;2026-10-01T06:01:56;5
+6;WALLET;hm hence;apropos past;boo helpfully oh;13915.36;ner;FAILED;aw;um awesome;../fake-data/blob/hipster.txt;2026-09-30T16:40:31;2026-10-01T02:35:57;6
+7;RAZORPAY;beyond ouch whoa;sauerkraut singe;plus;6947.22;ack;CAPTURED;that neatly;oof;../fake-data/blob/hipster.txt;2026-09-30T19:54:34;2026-09-30T19:20:55;7
+8;WALLET;without glimmer;specific premise important;intend and;18381.53;who;AUTHORIZED;but obnoxiously;fatherly in;../fake-data/blob/hipster.txt;2026-09-30T22:15:55;2026-09-30T13:51:42;8
+9;CASH;near though;thunderbolt howl common;larva;776.67;wil;CREATED;until sadly;jellyfish over;../fake-data/blob/hipster.txt;2026-10-01T05:55:44;2026-09-30T15:10:48;9
+10;CASH;and outset;aboard fooey drat;likewise disposer;17366.91;mea;AUTHORIZED;including fog;stable positively before;../fake-data/blob/hipster.txt;2026-10-01T08:30:16;2026-09-30T19:48:58;10

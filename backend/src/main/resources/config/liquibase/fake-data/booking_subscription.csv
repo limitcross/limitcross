@@ -1,0 +1,11 @@
+id;frequency;days_of_week;preferred_time;start_date;end_date;next_run_date;status;auto_pay;created_at;customer_id;service_id;service_package_id;address_id
+1;WEEKLY;before yowza;"15:57";2026-09-30;2026-09-30;2026-09-30;ACTIVE;false;2026-09-30T21:41:00;1;1;1;1
+2;BIWEEKLY;ill pant;"21:36";2026-10-01;2026-09-30;2026-10-01;ACTIVE;true;2026-09-30T21:42:52;2;2;2;2
+3;BIWEEKLY;restfully;"01:30";2026-09-30;2026-10-01;2026-10-01;ACTIVE;true;2026-10-01T02:56:06;2;3;3;3
+4;BIWEEKLY;curiously;"23:07";2026-09-30;2026-10-01;2026-09-30;CANCELLED;false;2026-09-30T21:23:28;2;4;4;4
+5;BIWEEKLY;whether configuration;"21:28";2026-10-01;2026-09-30;2026-09-30;ACTIVE;true;2026-09-30T21:44:31;1;5;5;5
+6;MONTHLY;downshift apud bloom;"23:55";2026-10-01;2026-10-01;2026-09-30;ACTIVE;true;2026-10-01T00:43:23;2;6;6;6
+7;MONTHLY;enthusiastically;"23:36";2026-09-30;2026-10-01;2026-09-30;CANCELLED;true;2026-09-30T19:16:58;2;7;7;7
+8;MONTHLY;when yieldingly minion;"16:03";2026-10-01;2026-09-30;2026-10-01;ACTIVE;true;2026-09-30T12:35:17;2;8;8;8
+9;MONTHLY;oof;"05:25";2026-10-01;2026-09-30;2026-09-30;PAUSED;false;2026-10-01T00:02:12;2;9;9;9
+10;MONTHLY;economise humor uh-huh;"23:36";2026-10-01;2026-09-30;2026-09-30;PAUSED;false;2026-10-01T05:10:42;1;10;10;10

@@ -1,0 +1,963 @@
+/*
+ * FacilityBackend - JHipster JDL (Urban Company style marketplace)
+ * Covers: facility_production_schema.sql + facility_advanced_features.sql
+ *
+ * Run:   jhipster jdl facility-backend.jdl
+ * Built-in JHipster entities used as-is: User (jhi_user), Authority.
+ *
+ * Conventions
+ *   - Every entity gets a Long auto-increment id (JHipster default).
+ *   - Time of day is a String "HH:mm" (JDL has no LocalTime type).
+ *   - JSON columns are TextBlob (longtext) or a short String (csv).
+ *   - Latitude/longitude and ratings are Double (BigDecimal = decimal(21,2) would lose precision).
+ *   - Money is BigDecimal.
+ */
+
+// ===================================================================
+// ENUMS
+// ===================================================================
+enum ActorType { CUSTOMER, PRO, ADMIN, SYSTEM }
+enum Gender { MALE, FEMALE, OTHER }
+enum AddressLabel { HOME, WORK, OTHER }
+enum DevicePlatform { ANDROID, IOS, WEB }
+
+enum OnboardingStatus { APPLIED, KYC_PENDING, TRAINING, ACTIVE, SUSPENDED, REJECTED, OFFBOARDED }
+enum KycDocType { AADHAAR, PAN, POLICE_VERIFICATION, BANK_PROOF, OTHER }
+enum VerificationStatus { PENDING, VERIFIED, REJECTED }
+enum TimeOffReason { LEAVE, BOOKING, OTHER }
+enum TrainingStatus { ASSIGNED, PASSED, FAILED }
+
+enum DiscountType { PERCENT, FLAT }
+enum MembershipStatus { ACTIVE, EXPIRED, CANCELLED }
+
+enum BookingStatus { REQUESTED, PENDING_ASSIGNMENT, CONFIRMED, PRO_EN_ROUTE, PRO_ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED, NO_SHOW, FAILED }
+enum BookingPaymentStatus { PENDING, AUTHORIZED, PAID, PARTIALLY_REFUNDED, REFUNDED, FAILED }
+enum PaymentMode { ONLINE, CASH }
+enum BookingSource { APP, WEB, ADMIN, SUBSCRIPTION }
+enum AssignmentStatus { OFFERED, ACCEPTED, REJECTED, EXPIRED }
+enum MediaType { BEFORE, AFTER, INVOICE, OTHER }
+
+enum GatewayProvider { RAZORPAY, CASHFREE, CASH, WALLET }
+enum TransactionStatus { CREATED, AUTHORIZED, CAPTURED, FAILED }
+enum RefundStatus { INITIATED, PROCESSED, FAILED }
+enum WalletTxnType { EARNING, COMMISSION, PENALTY, PAYOUT, ADJUSTMENT, CASH_COLLECTED }
+enum PayoutStatus { PENDING, PAID, FAILED }
+
+enum TicketCategory { PAYMENT, QUALITY, PRO_BEHAVIOUR, OTHER }
+enum TicketStatus { OPEN, IN_PROGRESS, RESOLVED, CLOSED }
+enum TicketPriority { LOW, NORMAL, HIGH, URGENT }
+enum NotificationChannel { PUSH, SMS, EMAIL, WHATSAPP, IN_APP }
+enum NotificationStatus { PENDING, SENT, FAILED, READ }
+enum OutboxStatus { NEW, SENT, FAILED }
+
+enum HoldStatus { HELD, CONVERTED, EXPIRED, RELEASED }
+enum SubscriptionFrequency { WEEKLY, BIWEEKLY, MONTHLY }
+enum SubscriptionStatus { ACTIVE, PAUSED, CANCELLED }
+enum QuoteStatus { PROPOSED, ACCEPTED, REJECTED, EXPIRED }
+enum QuoteItemType { LABOUR, MATERIAL, PART }
+enum PolicyAudience { CUSTOMER, PRO }
+enum WarrantyStatus { RAISED, APPROVED, REJECTED, REDO_BOOKED, CLOSED }
+enum CustomerWalletTxnType { TOPUP, SPEND, REFUND, CASHBACK, EXPIRY }
+enum LoyaltyReason { EARN_BOOKING, REDEEM, EXPIRE, BONUS }
+enum ReferralStatus { PENDING, GRANTED, REJECTED }
+enum InvoiceType { TAX_INVOICE, CREDIT_NOTE }
+enum ChatThreadStatus { OPEN, CLOSED }
+enum CallStatus { INITIATED, CONNECTED, COMPLETED, FAILED }
+enum IncentiveMetric { JOBS_COMPLETED, RATING, PEAK_HOUR_JOBS }
+enum IncentivePeriod { DAILY, WEEKLY, MONTHLY }
+
+enum FraudEntityType { USER, PRO, BOOKING, PAYMENT }
+enum FraudStatus { OPEN, CONFIRMED, DISMISSED }
+enum BlockedEntityType { PHONE, EMAIL, DEVICE, IP }
+enum SosStatus { OPEN, ACKNOWLEDGED, RESOLVED }
+enum ConsentPurpose { TERMS, PRIVACY, MARKETING, LOCATION }
+enum DeletionStatus { REQUESTED, IN_PROGRESS, DONE, REJECTED }
+enum BannerPlacement { HOME_TOP, HOME_MID, CATEGORY }
+enum WebhookStatus { RECEIVED, PROCESSED, FAILED }
+
+// ===================================================================
+// 1. GEOGRAPHY
+// ===================================================================
+entity City {
+  name String required maxlength(80),
+  stateName String required maxlength(80),
+  countryCode String required minlength(2) maxlength(2),
+  timezone String required maxlength(40),
+  active Boolean required,
+  createdAt Instant
+}
+
+entity ServiceZone {
+  name String required maxlength(100),
+  pincode String required maxlength(10),
+  active Boolean required
+}
+
+// ===================================================================
+// 2. CUSTOMER
+// ===================================================================
+entity UserProfile {
+  gender Gender,
+  dateOfBirth LocalDate,
+  phoneVerified Boolean required,
+  emailVerified Boolean required,
+  preferredLanguage String maxlength(10),
+  referralCode String unique maxlength(20),
+  marketingOptIn Boolean,
+  lastLoginAt Instant,
+  createdAt Instant,
+  updatedAt Instant
+}
+
+entity CustomerAddress {
+  label AddressLabel required,
+  contactName String required maxlength(100),
+  contactPhone String required maxlength(30),
+  line1 String required maxlength(200),
+  line2 String maxlength(200),
+  landmark String maxlength(200),
+  pincode String required maxlength(10),
+  latitude Double,
+  longitude Double,
+  defaultAddress Boolean required,
+  deletedAt Instant,
+  createdAt Instant,
+  updatedAt Instant
+}
+
+entity DeviceToken {
+  platform DevicePlatform required,
+  token String required unique maxlength(300),
+  active Boolean required,
+  createdAt Instant
+}
+
+// ===================================================================
+// 3. CATALOG
+// ===================================================================
+entity ServiceCategory {
+  code String required unique maxlength(40),
+  name String required maxlength(100),
+  icon String maxlength(255),
+  sortOrder Integer,
+  active Boolean required
+}
+
+/** Replaces facility_service. 'code' keeps the old string ids like hm-ac. */
+entity FacilityService {
+  code String required unique maxlength(50),
+  title String required maxlength(120),
+  slug String required unique maxlength(140),
+  emoji String maxlength(10),
+  imageUrl String maxlength(255),
+  description String required maxlength(500),
+  highlights TextBlob,
+  durationMinutes Integer required min(1),
+  warrantyDays Integer min(0),
+  sacCode String maxlength(10),
+  gstPercent BigDecimal min(0),
+  genderSpecific Gender,
+  requiresVisitCharge Boolean,
+  popular Boolean,
+  active Boolean required,
+  avgRating Double min(0) max(5),
+  reviewsCount Integer min(0),
+  sortOrder Integer,
+  createdAt Instant,
+  updatedAt Instant
+}
+
+entity ServicePackage {
+  name String required maxlength(120),
+  description String maxlength(500),
+  basePrice BigDecimal required min(0),
+  mrp BigDecimal min(0),
+  durationMinutes Integer required min(1),
+  active Boolean required,
+  sortOrder Integer
+}
+
+entity ServiceAddon {
+  name String required maxlength(120),
+  price BigDecimal required min(0),
+  durationMinutes Integer min(0),
+  active Boolean required
+}
+
+entity CityPackagePrice {
+  price BigDecimal required min(0),
+  surgeMultiplier BigDecimal min(0),
+  validFrom Instant required,
+  validTo Instant
+}
+
+entity ServiceTranslation {
+  langKey String required maxlength(10),
+  title String required maxlength(120),
+  description String maxlength(500)
+}
+
+entity SearchKeyword {
+  keyword String required maxlength(80),
+  weight Integer
+}
+
+// ===================================================================
+// 4. PROFESSIONALS
+// ===================================================================
+entity ProfessionalTier {
+  code String required unique maxlength(20),
+  name String required maxlength(50),
+  minRating Double min(0) max(5),
+  minJobs Integer min(0),
+  commissionPercent BigDecimal required min(0) max(100),
+  dispatchPriority Integer
+}
+
+entity Professional {
+  displayName String required maxlength(120),
+  photoUrl String maxlength(255),
+  gender Gender,
+  onboardingStatus OnboardingStatus required,
+  online Boolean required,
+  avgRating Double min(0) max(5),
+  jobsCompleted Integer min(0),
+  cancellationRate Double min(0) max(100),
+  lastLat Double,
+  lastLng Double,
+  lastLocationAt Instant,
+  joinedAt Instant,
+  cashInHand BigDecimal,
+  cashLimit BigDecimal,
+  maxDailyJobs Integer min(1),
+  languages String maxlength(200),
+  bankAccountEnc String maxlength(255),
+  ifscCode String maxlength(11),
+  deletedAt Instant,
+  createdAt Instant,
+  updatedAt Instant
+}
+
+entity ProfessionalKycDocument {
+  docType KycDocType required,
+  docNumberEnc String maxlength(255),
+  fileUrl String required maxlength(255),
+  status VerificationStatus required,
+  reviewedAt Instant,
+  rejectReason String maxlength(255),
+  createdAt Instant
+}
+
+entity ProfessionalSkill {
+  skillLevel Integer min(1) max(5),
+  certifiedAt LocalDate
+}
+
+entity ProfessionalAvailability {
+  dayOfWeek Integer required min(1) max(7),
+  startTime String required pattern(/^([01][0-9]|2[0-3]):[0-5][0-9]$/),
+  endTime String required pattern(/^([01][0-9]|2[0-3]):[0-5][0-9]$/)
+}
+
+entity ProfessionalTimeOff {
+  startsAt Instant required,
+  endsAt Instant required,
+  reason TimeOffReason required
+}
+
+entity ProfessionalTierHistory {
+  effectiveFrom Instant required,
+  reason String maxlength(120)
+}
+
+entity TrainingModule {
+  title String required maxlength(150),
+  contentUrl String maxlength(255),
+  mandatory Boolean,
+  passScore Integer min(0) max(100)
+}
+
+entity ProfessionalTraining {
+  score Integer min(0) max(100),
+  status TrainingStatus required,
+  completedAt Instant
+}
+
+entity CommissionRule {
+  commissionPercent BigDecimal required min(0) max(100),
+  flatFee BigDecimal min(0),
+  validFrom Instant required,
+  validTo Instant
+}
+
+entity IncentiveRule {
+  name String required maxlength(120),
+  metric IncentiveMetric required,
+  threshold BigDecimal required,
+  rewardAmount BigDecimal required min(0),
+  period IncentivePeriod required,
+  active Boolean required
+}
+
+entity ProfessionalIncentiveAward {
+  periodStart LocalDate required,
+  periodEnd LocalDate required,
+  amount BigDecimal required min(0),
+  createdAt Instant
+}
+
+// ===================================================================
+// 5. COUPONS & MEMBERSHIP
+// ===================================================================
+entity Coupon {
+  code String required unique maxlength(30),
+  description String maxlength(255),
+  discountType DiscountType required,
+  discountValue BigDecimal required min(0),
+  maxDiscount BigDecimal min(0),
+  minOrderValue BigDecimal min(0),
+  firstBookingOnly Boolean,
+  totalUsageLimit Integer min(0),
+  perUserLimit Integer min(1),
+  usedCount Integer min(0),
+  validFrom Instant required,
+  validTo Instant required,
+  active Boolean required
+}
+
+entity CouponRedemption {
+  discountAmount BigDecimal required min(0),
+  createdAt Instant
+}
+
+entity MembershipPlan {
+  name String required maxlength(80),
+  price BigDecimal required min(0),
+  durationDays Integer required min(1),
+  discountPercent BigDecimal min(0) max(100),
+  freeVisitCharge Boolean,
+  prioritySupport Boolean,
+  active Boolean required
+}
+
+entity UserMembership {
+  startsAt Instant required,
+  endsAt Instant required,
+  status MembershipStatus required
+}
+
+// ===================================================================
+// 6. SLOTS, SUBSCRIPTIONS
+// ===================================================================
+entity SlotCapacity {
+  slotStart Instant required,
+  slotEnd Instant required,
+  capacity Integer required min(0),
+  bookedCount Integer required min(0),
+  blocked Boolean,
+  priceMultiplier BigDecimal min(0)
+}
+
+entity SlotHold {
+  status HoldStatus required,
+  expiresAt Instant required,
+  createdAt Instant
+}
+
+entity BookingSubscription {
+  frequency SubscriptionFrequency required,
+  daysOfWeek String maxlength(30),
+  preferredTime String required pattern(/^([01][0-9]|2[0-3]):[0-5][0-9]$/),
+  startDate LocalDate required,
+  endDate LocalDate,
+  nextRunDate LocalDate required,
+  status SubscriptionStatus required,
+  autoPay Boolean,
+  createdAt Instant
+}
+
+// ===================================================================
+// 7. BOOKINGS
+// ===================================================================
+entity Booking {
+  bookingNo String required unique maxlength(20),
+  publicId UUID required unique,
+  serviceTitle String required maxlength(120),
+  addressSnapshot TextBlob required,
+  scheduledStart Instant required,
+  scheduledEnd Instant required,
+  status BookingStatus required,
+  paymentStatus BookingPaymentStatus required,
+  paymentMode PaymentMode required,
+  currency String required minlength(3) maxlength(3),
+  subtotal BigDecimal required min(0),
+  addonTotal BigDecimal min(0),
+  discountAmount BigDecimal min(0),
+  serviceFee BigDecimal min(0),
+  taxAmount BigDecimal min(0),
+  tipAmount BigDecimal min(0),
+  totalAmount BigDecimal required min(0),
+  customerNotes String maxlength(500),
+  startOtp String maxlength(6),
+  cancelledBy ActorType,
+  cancelReason String maxlength(255),
+  source BookingSource,
+  walletAmountUsed BigDecimal min(0),
+  loyaltyPointsUsed Integer min(0),
+  cancellationFee BigDecimal min(0),
+  rescheduleCount Integer min(0),
+  platformCommission BigDecimal min(0),
+  proEarning BigDecimal min(0),
+  arrivalEta Instant,
+  priority Boolean,
+  startedAt Instant,
+  completedAt Instant,
+  cancelledAt Instant,
+  createdAt Instant,
+  updatedAt Instant
+}
+
+entity BookingItem {
+  name String required maxlength(160),
+  unitPrice BigDecimal required min(0),
+  quantity Integer required min(1),
+  lineTotal BigDecimal required min(0)
+}
+
+entity BookingStatusHistory {
+  fromStatus BookingStatus,
+  toStatus BookingStatus required,
+  changedBy String maxlength(50),
+  note String maxlength(255),
+  createdAt Instant required
+}
+
+entity BookingAssignment {
+  status AssignmentStatus required,
+  offeredAt Instant,
+  respondedAt Instant,
+  expiresAt Instant required,
+  rejectReason String maxlength(255)
+}
+
+entity BookingMedia {
+  mediaType MediaType required,
+  fileUrl String required maxlength(255),
+  createdAt Instant
+}
+
+entity BookingQuote {
+  status QuoteStatus required,
+  totalAmount BigDecimal required min(0),
+  notes String maxlength(1000),
+  validUntil Instant,
+  respondedAt Instant,
+  createdAt Instant
+}
+
+entity BookingQuoteItem {
+  itemType QuoteItemType required,
+  description String required maxlength(200),
+  unitPrice BigDecimal required min(0),
+  quantity BigDecimal required min(0),
+  lineTotal BigDecimal required min(0)
+}
+
+entity BookingReschedule {
+  oldStart Instant required,
+  oldEnd Instant required,
+  newStart Instant required,
+  newEnd Instant required,
+  requestedBy ActorType required,
+  reason String maxlength(255),
+  feeCharged BigDecimal min(0),
+  createdAt Instant
+}
+
+entity CancellationPolicy {
+  hoursBeforeStart Integer required min(0),
+  feePercent BigDecimal required min(0) max(100),
+  minFee BigDecimal min(0),
+  appliesTo PolicyAudience required,
+  active Boolean required
+}
+
+entity WarrantyClaim {
+  issue String required maxlength(1000),
+  status WarrantyStatus required,
+  withinWarranty Boolean required,
+  createdAt Instant,
+  resolvedAt Instant
+}
+
+// ===================================================================
+// 8. PAYMENTS, WALLETS, LOYALTY, INVOICES
+// ===================================================================
+entity Payment {
+  gateway GatewayProvider required,
+  gatewayOrderId String maxlength(80),
+  gatewayPaymentId String maxlength(80),
+  paymentMethod String maxlength(20),
+  amount BigDecimal required min(0),
+  currency String required minlength(3) maxlength(3),
+  status TransactionStatus required,
+  idempotencyKey String required unique maxlength(64),
+  failureReason String maxlength(255),
+  rawResponse TextBlob,
+  createdAt Instant,
+  updatedAt Instant
+}
+
+entity Refund {
+  amount BigDecimal required min(0),
+  reason String maxlength(255),
+  status RefundStatus required,
+  gatewayRefundId String maxlength(80),
+  createdAt Instant
+}
+
+entity ProfessionalWallet {
+  balance BigDecimal required,
+  updatedAt Instant
+}
+
+entity WalletTransaction {
+  txnType WalletTxnType required,
+  amount BigDecimal required,
+  balanceAfter BigDecimal required,
+  description String maxlength(255),
+  createdAt Instant required
+}
+
+entity Payout {
+  amount BigDecimal required min(0),
+  status PayoutStatus required,
+  bankReference String maxlength(80),
+  periodStart LocalDate required,
+  periodEnd LocalDate required,
+  createdAt Instant,
+  paidAt Instant
+}
+
+entity CustomerWallet {
+  balance BigDecimal required min(0),
+  updatedAt Instant
+}
+
+entity CustomerWalletTxn {
+  txnType CustomerWalletTxnType required,
+  amount BigDecimal required,
+  balanceAfter BigDecimal required,
+  expiresAt Instant,
+  note String maxlength(200),
+  createdAt Instant required
+}
+
+entity LoyaltyLedger {
+  points Integer required,
+  reason LoyaltyReason required,
+  expiresAt LocalDate,
+  createdAt Instant
+}
+
+entity ReferralReward {
+  rewardAmount BigDecimal required min(0),
+  status ReferralStatus required,
+  createdAt Instant
+}
+
+entity InvoiceSequence {
+  series String required maxlength(10),
+  fiscalYear String required maxlength(9),
+  lastNumber Long required min(0)
+}
+
+entity Invoice {
+  invoiceNo String required unique maxlength(30),
+  invoiceType InvoiceType required,
+  customerGstin String maxlength(15),
+  sellerGstin String required maxlength(15),
+  placeOfSupply String required maxlength(40),
+  taxableAmount BigDecimal required min(0),
+  cgst BigDecimal min(0),
+  sgst BigDecimal min(0),
+  igst BigDecimal min(0),
+  totalAmount BigDecimal required min(0),
+  pdfUrl String maxlength(255),
+  issuedAt Instant
+}
+
+entity InvoiceLine {
+  description String required maxlength(200),
+  sacCode String maxlength(10),
+  quantity BigDecimal required min(0),
+  unitPrice BigDecimal required min(0),
+  gstPercent BigDecimal required min(0),
+  lineTotal BigDecimal required min(0)
+}
+
+// ===================================================================
+// 9. REVIEWS, SUPPORT, NOTIFICATIONS, CHAT, CALLS
+// ===================================================================
+entity Review {
+  rating Integer required min(1) max(5),
+  reviewText String maxlength(1000),
+  tags String maxlength(500),
+  visible Boolean required,
+  createdAt Instant
+}
+
+entity SupportTicket {
+  ticketNo String required unique maxlength(20),
+  category TicketCategory required,
+  subject String required maxlength(200),
+  description String maxlength(2000),
+  status TicketStatus required,
+  priority TicketPriority required,
+  createdAt Instant,
+  resolvedAt Instant
+}
+
+entity Notification {
+  channel NotificationChannel required,
+  notificationType String required maxlength(40),
+  title String maxlength(150),
+  body String required maxlength(500),
+  data TextBlob,
+  status NotificationStatus required,
+  createdAt Instant,
+  sentAt Instant,
+  readAt Instant
+}
+
+entity ChatThread {
+  status ChatThreadStatus required,
+  createdAt Instant
+}
+
+entity ChatMessage {
+  body String maxlength(2000),
+  mediaUrl String maxlength(255),
+  flagged Boolean,
+  createdAt Instant,
+  readAt Instant
+}
+
+entity CallSession {
+  virtualNumber String required maxlength(20),
+  providerCallId String maxlength(80),
+  durationSec Integer min(0),
+  status CallStatus required,
+  createdAt Instant
+}
+
+/** High volume. Add monthly partitioning in a custom Liquibase changelog. No FKs on purpose. */
+entity ProfessionalLocationLog {
+  professionalId Long required,
+  bookingRef String maxlength(36),
+  latitude Double required,
+  longitude Double required,
+  speedKmph Double,
+  batteryPct Integer min(0) max(100),
+  recordedAt Instant required
+}
+
+// ===================================================================
+// 10. TRUST, SAFETY, CONSENT
+// ===================================================================
+entity FraudFlag {
+  entityType FraudEntityType required,
+  entityId String required maxlength(64),
+  ruleCode String required maxlength(40),
+  riskScore Integer min(0),
+  status FraudStatus required,
+  details TextBlob,
+  createdAt Instant
+}
+
+entity BlockedEntity {
+  entityType BlockedEntityType required,
+  valueHash String required maxlength(64),
+  reason String maxlength(200),
+  blockedUntil Instant,
+  createdAt Instant
+}
+
+entity SosAlert {
+  latitude Double,
+  longitude Double,
+  status SosStatus required,
+  createdAt Instant,
+  resolvedAt Instant
+}
+
+entity UserConsent {
+  purpose ConsentPurpose required,
+  policyVersion String required maxlength(10),
+  granted Boolean required,
+  ipAddress String maxlength(45),
+  createdAt Instant
+}
+
+entity DataDeletionRequest {
+  status DeletionStatus required,
+  requestedAt Instant,
+  completedAt Instant,
+  note String maxlength(255)
+}
+
+// ===================================================================
+// 11. CONFIG, CMS, ANALYTICS, PLATFORM
+// ===================================================================
+entity AppConfig {
+  configKey String required unique maxlength(80),
+  configValue TextBlob required,
+  description String maxlength(200),
+  updatedBy String maxlength(50),
+  updatedAt Instant
+}
+
+entity FeatureFlag {
+  flagKey String required unique maxlength(60),
+  enabled Boolean required,
+  rolloutPercent Integer min(0) max(100),
+  cityIds String maxlength(500),
+  updatedAt Instant
+}
+
+entity Banner {
+  title String required maxlength(120),
+  imageUrl String required maxlength(255),
+  deepLink String maxlength(255),
+  placement BannerPlacement required,
+  sortOrder Integer,
+  startsAt Instant required,
+  endsAt Instant,
+  active Boolean required
+}
+
+entity CityDailyMetrics {
+  metricDate LocalDate required,
+  bookingsCreated Integer min(0),
+  bookingsCompleted Integer min(0),
+  bookingsCancelled Integer min(0),
+  gmv BigDecimal,
+  platformRevenue BigDecimal,
+  avgRating Double,
+  avgAssignmentSec Integer
+}
+
+entity ProfessionalDailyMetrics {
+  metricDate LocalDate required,
+  jobsOffered Integer min(0),
+  jobsAccepted Integer min(0),
+  jobsCompleted Integer min(0),
+  jobsCancelled Integer min(0),
+  onlineMinutes Integer min(0),
+  earnings BigDecimal,
+  avgRating Double
+}
+
+entity PaymentWebhookEvent {
+  gateway GatewayProvider required,
+  eventId String required maxlength(100),
+  eventType String required maxlength(60),
+  signatureOk Boolean required,
+  payload TextBlob required,
+  status WebhookStatus required,
+  receivedAt Instant,
+  processedAt Instant
+}
+
+entity ApiIdempotencyKey {
+  idemKey String required maxlength(64),
+  requestHash String required maxlength(64),
+  responseCode Integer,
+  responseBody TextBlob,
+  createdAt Instant,
+  expiresAt Instant required
+}
+
+entity AuditLog {
+  actor String required maxlength(50),
+  action String required maxlength(40),
+  entityType String required maxlength(40),
+  entityId String required maxlength(64),
+  oldValue TextBlob,
+  newValue TextBlob,
+  ipAddress String maxlength(45),
+  createdAt Instant
+}
+
+entity OutboxEvent {
+  aggregateType String required maxlength(40),
+  aggregateId String required maxlength(64),
+  eventType String required maxlength(60),
+  payload TextBlob required,
+  status OutboxStatus required,
+  attempts Integer min(0),
+  createdAt Instant,
+  processedAt Instant
+}
+
+// ===================================================================
+// RELATIONSHIPS - OneToMany (bidirectional, parent owns list)
+// ===================================================================
+relationship OneToMany {
+  City{zone} to ServiceZone{city(name) required}
+  ServiceCategory{service} to FacilityService{category(name) required}
+  FacilityService{servicePackage} to ServicePackage{service(title) required}
+  FacilityService{addon} to ServiceAddon{service(title) required}
+  FacilityService{translation} to ServiceTranslation{service(title) required}
+  Professional{kycDocument} to ProfessionalKycDocument{professional(displayName) required}
+  Professional{skill} to ProfessionalSkill{professional(displayName) required}
+  Professional{availability} to ProfessionalAvailability{professional(displayName) required}
+  Professional{timeOff} to ProfessionalTimeOff{professional(displayName) required}
+  Booking{item} to BookingItem{booking(bookingNo) required}
+  Booking{statusHistory} to BookingStatusHistory{booking(bookingNo) required}
+  Booking{assignment} to BookingAssignment{booking(bookingNo) required}
+  Booking{media} to BookingMedia{booking(bookingNo) required}
+  Booking{payment} to Payment{booking(bookingNo) required}
+  Booking{quote} to BookingQuote{booking(bookingNo) required}
+  Booking{reschedule} to BookingReschedule{booking(bookingNo) required}
+  BookingQuote{item} to BookingQuoteItem{quote required}
+  Invoice{line} to InvoiceLine{invoice(invoiceNo) required}
+  ChatThread{message} to ChatMessage{thread required}
+}
+
+// ===================================================================
+// RELATIONSHIPS - OneToOne
+// ===================================================================
+relationship OneToOne {
+  UserProfile{user(login) required} to User with builtInEntity
+  Professional{user(login) required} to User with builtInEntity
+  CustomerWallet{user(login) required} to User with builtInEntity
+  ProfessionalWallet{professional(displayName) required} to Professional
+  Review{booking(bookingNo) required} to Booking
+  CouponRedemption{booking(bookingNo) required} to Booking
+  ChatThread{booking(bookingNo) required} to Booking
+}
+
+// ===================================================================
+// RELATIONSHIPS - ManyToMany
+// ===================================================================
+relationship ManyToMany {
+  Professional{zone(name)} to ServiceZone{professional}
+}
+
+// ===================================================================
+// RELATIONSHIPS - ManyToOne to the built-in User
+// ===================================================================
+relationship ManyToOne {
+  UserProfile{referredBy(login)} to User with builtInEntity
+  CustomerAddress{customer(login) required} to User with builtInEntity
+  DeviceToken{user(login) required} to User with builtInEntity
+  ProfessionalKycDocument{reviewer(login)} to User with builtInEntity
+  UserMembership{user(login) required} to User with builtInEntity
+  SlotHold{user(login) required} to User with builtInEntity
+  BookingSubscription{customer(login) required} to User with builtInEntity
+  BookingMedia{uploadedBy(login)} to User with builtInEntity
+  Booking{customer(login) required} to User with builtInEntity
+  CouponRedemption{user(login) required} to User with builtInEntity
+  WarrantyClaim{customer(login) required} to User with builtInEntity
+  CustomerWalletTxn{user(login) required} to User with builtInEntity
+  LoyaltyLedger{user(login) required} to User with builtInEntity
+  ReferralReward{referrer(login) required} to User with builtInEntity
+  ReferralReward{referee(login) required} to User with builtInEntity
+  Invoice{customer(login) required} to User with builtInEntity
+  ChatThread{customer(login) required} to User with builtInEntity
+  ChatMessage{sender(login) required} to User with builtInEntity
+  CallSession{caller(login) required} to User with builtInEntity
+  CallSession{callee(login) required} to User with builtInEntity
+  Review{customer(login) required} to User with builtInEntity
+  SupportTicket{user(login) required} to User with builtInEntity
+  SupportTicket{assignedTo(login)} to User with builtInEntity
+  Notification{user(login) required} to User with builtInEntity
+  SosAlert{raisedBy(login) required} to User with builtInEntity
+  SosAlert{handledBy(login)} to User with builtInEntity
+  UserConsent{user(login) required} to User with builtInEntity
+  DataDeletionRequest{user(login) required} to User with builtInEntity
+  ApiIdempotencyKey{user(login) required} to User with builtInEntity
+}
+
+// ===================================================================
+// RELATIONSHIPS - ManyToOne between domain entities
+// ===================================================================
+relationship ManyToOne {
+  CustomerAddress{city(name) required} to City
+  Professional{homeCity(name) required} to City
+  Professional{tier(name)} to ProfessionalTier
+  ServiceCategory{parent(name)} to ServiceCategory
+  CityPackagePrice{servicePackage(name) required} to ServicePackage
+  CityPackagePrice{city(name) required} to City
+  SearchKeyword{service(title) required} to FacilityService
+  ProfessionalSkill{service(title) required} to FacilityService
+  ProfessionalTimeOff{booking(bookingNo)} to Booking
+  ProfessionalTierHistory{professional(displayName) required} to Professional
+  ProfessionalTierHistory{tier(name) required} to ProfessionalTier
+  TrainingModule{service(title)} to FacilityService
+  ProfessionalTraining{professional(displayName) required} to Professional
+  ProfessionalTraining{module(title) required} to TrainingModule
+  CommissionRule{service(title)} to FacilityService
+  CommissionRule{category(name)} to ServiceCategory
+  CommissionRule{city(name)} to City
+  CommissionRule{tier(name)} to ProfessionalTier
+  IncentiveRule{city(name)} to City
+  ProfessionalIncentiveAward{professional(displayName) required} to Professional
+  ProfessionalIncentiveAward{rule(name) required} to IncentiveRule
+  ProfessionalIncentiveAward{walletTransaction} to WalletTransaction
+  Coupon{service(title)} to FacilityService
+  Coupon{city(name)} to City
+  CouponRedemption{coupon(code) required} to Coupon
+  UserMembership{plan(name) required} to MembershipPlan
+  SlotCapacity{zone(name) required} to ServiceZone
+  SlotCapacity{category(name) required} to ServiceCategory
+  SlotHold{slotCapacity} to SlotCapacity
+  SlotHold{booking(bookingNo)} to Booking
+  BookingSubscription{service(title) required} to FacilityService
+  BookingSubscription{servicePackage(name) required} to ServicePackage
+  BookingSubscription{address(line1) required} to CustomerAddress
+  BookingSubscription{preferredProfessional(displayName)} to Professional
+  Booking{service(title) required} to FacilityService
+  Booking{city(name) required} to City
+  Booking{address(line1)} to CustomerAddress
+  Booking{professional(displayName)} to Professional
+  Booking{coupon(code)} to Coupon
+  Booking{subscription} to BookingSubscription
+  Booking{slotCapacity} to SlotCapacity
+  BookingItem{servicePackage(name)} to ServicePackage
+  BookingItem{addon(name)} to ServiceAddon
+  BookingAssignment{professional(displayName) required} to Professional
+  BookingQuote{professional(displayName) required} to Professional
+  CancellationPolicy{category(name)} to ServiceCategory
+  CancellationPolicy{service(title)} to FacilityService
+  WarrantyClaim{booking(bookingNo) required} to Booking
+  WarrantyClaim{redoBooking(bookingNo)} to Booking
+  Refund{payment required} to Payment
+  Refund{booking(bookingNo) required} to Booking
+  WalletTransaction{professional(displayName) required} to Professional
+  WalletTransaction{booking(bookingNo)} to Booking
+  Payout{professional(displayName) required} to Professional
+  CustomerWalletTxn{booking(bookingNo)} to Booking
+  LoyaltyLedger{booking(bookingNo)} to Booking
+  ReferralReward{triggerBooking(bookingNo)} to Booking
+  Invoice{booking(bookingNo) required} to Booking
+  ChatThread{professional(displayName) required} to Professional
+  CallSession{booking(bookingNo) required} to Booking
+  Review{professional(displayName) required} to Professional
+  Review{service(title) required} to FacilityService
+  SupportTicket{booking(bookingNo)} to Booking
+  SosAlert{booking(bookingNo) required} to Booking
+  Banner{city(name)} to City
+  CityDailyMetrics{city(name) required} to City
+  CityDailyMetrics{category(name) required} to ServiceCategory
+  ProfessionalDailyMetrics{professional(displayName) required} to Professional
+}
+
+// ===================================================================
+// OPTIONS
+// ===================================================================
+paginate all with pagination except ServiceCategory, ProfessionalTier, AppConfig, FeatureFlag, MembershipPlan, CancellationPolicy
+service all with serviceClass
+dto all with mapstruct
+filter Booking, FacilityService, Professional, Coupon, Payment, Review, SupportTicket, Notification, CustomerAddress

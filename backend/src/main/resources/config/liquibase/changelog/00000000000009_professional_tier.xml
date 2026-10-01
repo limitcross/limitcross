@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="00000000000009" author="limitcross">
+        <createTable tableName="professional_tier">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="min_rating" type="decimal(3,2)" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="min_jobs" type="int" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="commission_percent" type="decimal(5,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dispatch_priority" type="int" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="professional_tier" columnNames="code" constraintName="ux_tier_code"/>
+        <insert tableName="professional_tier">
+            <column name="code" value="BRONZE"/>
+            <column name="name" value="Bronze"/>
+            <column name="min_rating" valueNumeric="0.00"/>
+            <column name="min_jobs" valueNumeric="0"/>
+            <column name="commission_percent" valueNumeric="25.00"/>
+            <column name="dispatch_priority" valueNumeric="0"/>
+        </insert>
+        <insert tableName="professional_tier">
+            <column name="code" value="SILVER"/>
+            <column name="name" value="Silver"/>
+            <column name="min_rating" valueNumeric="4.50"/>
+            <column name="min_jobs" valueNumeric="50"/>
+            <column name="commission_percent" valueNumeric="22.00"/>
+            <column name="dispatch_priority" valueNumeric="1"/>
+        </insert>
+        <insert tableName="professional_tier">
+            <column name="code" value="GOLD"/>
+            <column name="name" value="Gold"/>
+            <column name="min_rating" valueNumeric="4.70"/>
+            <column name="min_jobs" valueNumeric="200"/>
+            <column name="commission_percent" valueNumeric="20.00"/>
+            <column name="dispatch_priority" valueNumeric="2"/>
+        </insert>
+        <insert tableName="professional_tier">
+            <column name="code" value="PLATINUM"/>
+            <column name="name" value="Platinum"/>
+            <column name="min_rating" valueNumeric="4.85"/>
+            <column name="min_jobs" valueNumeric="500"/>
+            <column name="commission_percent" valueNumeric="18.00"/>
+            <column name="dispatch_priority" valueNumeric="3"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

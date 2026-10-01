@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity SlotCapacity.
+    -->
+    <changeSet id="20261001091741-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="zone_id"
+                                 baseTableName="slot_capacity"
+                                 constraintName="fk_slot_capacity__zone_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="service_zone"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="category_id"
+                                 baseTableName="slot_capacity"
+                                 constraintName="fk_slot_capacity__category_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="service_category"
+                                 />
+    </changeSet>
+</databaseChangeLog>

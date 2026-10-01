@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../services/auth_service.dart';
-import '../services/backend_auth_service.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/mobile_frame.dart';
 import 'register_screen.dart';
@@ -32,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await BackendAuthService.instance.signIn(
+      await AuthService().signInWithEmailAndPassword(
         email: _email.text.trim(),
         password: _password.text,
       );
@@ -106,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (confirmed == true && resetEmailController.text.trim().isNotEmpty) {
       try {
-        await BackendAuthService.instance.sendPasswordResetEmail(resetEmailController.text.trim());
+        await AuthService().sendPasswordResetEmail(resetEmailController.text.trim());
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Password reset link sent to ${resetEmailController.text.trim()}')),
@@ -235,12 +234,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             )
                           : const Text('Log in'),
                     ),
-                    const SizedBox(height: 12),
-                    OutlinedButton.icon(
-                      onPressed: _isLoading ? null : _signInWithGoogle,
-                      icon: const Icon(Icons.g_mobiledata, size: 28),
-                      label: const Text('Continue with Google'),
-                    ),
                     const SizedBox(height: 24),
                     Row(
                       children: [
@@ -254,6 +247,25 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const Expanded(child: Divider()),
                       ],
+                    ),
+                    const SizedBox(height: 16),
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Google Sign-In requires configuring OAuth in the Firebase Console.',
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.g_mobiledata, size: 28),
+                      label: const Text('Continue with Google'),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(52),
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     Wrap(
@@ -281,28 +293,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _signInWithGoogle() async {
-    setState(() => _isLoading = true);
-    try {
-      await AuthService().signInWithGoogle();
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Successfully logged in with Google!')),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AuthService.getErrorMessage(e)),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
   }
 }
