@@ -1,0 +1,76 @@
+<main class="page-shell">
+  <section class="hero" aria-labelledby="services-title">
+    <div class="hero-copy">
+      <p class="eyebrow">A BETTER HOME STARTS HERE</p>
+      <h1 id="services-title">Home care, <span>made simple.</span></h1>
+      <p class="hero-description">Trusted local professionals for all the little things that make a house feel like home.</p>
+      <a class="hero-link" href="#service-results">Explore our services <span aria-hidden="true">↓</span></a>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="sun"></div>
+      <div class="hero-house">⌂</div>
+      <div class="hero-sparkle">✦</div>
+      <div class="hero-note">Your home,<br>in good hands.</div>
+    </div>
+  </section>
+
+  <section class="catalog" id="service-results" aria-labelledby="catalog-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">WHAT CAN WE HELP WITH?</p>
+        <h2 id="catalog-title">Services for every home</h2>
+      </div>
+      <label class="search-control">
+        <span class="visually-hidden">Search services</span>
+        <span aria-hidden="true">⌕</span>
+        <input #searchInput type="search" placeholder="Try “deep cleaning”" [value]="searchText()" (input)="updateSearch(searchInput.value)">
+      </label>
+    </div>
+
+    @if (categories().length > 0) {
+      <div class="category-list" aria-label="Filter services by category">
+        <button type="button" [class.active]="selectedCategory() === 'all'" (click)="selectedCategory.set('all')">All services</button>
+        @for (category of categories(); track category) {
+          <button type="button" [class.active]="selectedCategory() === category" (click)="selectedCategory.set(category)">
+            {{ categoryLabel(category) }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (loading()) {
+      <p class="status-message" role="status">Finding trusted services for you…</p>
+    } @else if (errorMessage()) {
+      <div class="empty-state" role="alert">
+        <p>{{ errorMessage() }}</p>
+        <a class="button-link" routerLink="/login">Sign in</a>
+      </div>
+    } @else if (filteredServices().length === 0) {
+      <p class="status-message">No services match your search. Try another term or category.</p>
+    } @else {
+      <div class="service-grid">
+        @for (service of filteredServices(); track service.id) {
+          <article class="service-card">
+            <div class="card-topline">
+              <span class="service-icon" aria-hidden="true">{{ service.emoji || '⌂' }}</span>
+              @if (service.isPopular) {
+                <span class="popular-label">Popular</span>
+              }
+            </div>
+            <p class="service-category">{{ categoryLabel(service.category) }}</p>
+            <h3>{{ service.title }}</h3>
+            <p class="service-description">{{ service.description }}</p>
+            <div class="service-meta">
+              <span aria-label="Rated {{ service.rating }} out of 5">★ {{ service.rating }}</span>
+              <span>{{ service.reviewsCount.toLocaleString() }} reviews</span>
+            </div>
+            <div class="card-footer">
+              <p>Starting at <strong>₹{{ service.startingPrice.toLocaleString() }}</strong></p>
+              <a [routerLink]="['/services', service.id]" [attr.aria-label]="'View details for ' + service.title">View details <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</main>

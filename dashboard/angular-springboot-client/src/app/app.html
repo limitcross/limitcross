@@ -1,0 +1,21 @@
+<div class="app-shell">
+  <header class="site-header">
+    <a class="brand" routerLink="/services" aria-label="AtHome services home">
+      <span class="brand-mark" aria-hidden="true">a</span>
+      <span>athome</span>
+    </a>
+    <nav aria-label="Main navigation">
+      @if (auth.isAuthenticated()) {
+        <a routerLink="/services" routerLinkActive="active-link">Explore services</a>
+        <button class="sign-out" type="button" (click)="signOut()">Sign out</button>
+      } @else {
+        <a routerLink="/login" routerLinkActive="active-link">Sign in</a>
+      }
+    </nav>
+  </header>
+  <router-outlet />
+  <footer class="site-footer">
+    <span>Thoughtful home care, from people you can trust.</span>
+    <span>© 2026 AtHome</span>
+  </footer>
+</div>

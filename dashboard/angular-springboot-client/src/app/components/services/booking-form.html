@@ -1,0 +1,82 @@
+<main class="booking-shell">
+  <a class="back-link" [routerLink]="service() ? ['/services', service()?.id] : ['/services']"><span aria-hidden="true">←</span> Back to service</a>
+
+  @if (loading()) {
+    <p class="status-message" role="status">Preparing your booking…</p>
+  } @else if (booking(); as result) {
+    <section class="success-card" aria-labelledby="success-title">
+      <span class="success-icon" aria-hidden="true">✓</span>
+      <p class="eyebrow">REQUEST RECEIVED</p>
+      <h1 id="success-title">You’re one step closer to a happier home.</h1>
+      <p class="success-copy">Your booking for {{ result.serviceTitle }} has been requested. We’ll confirm the details with you shortly.</p>
+      <dl class="booking-summary">
+        <div><dt>Booking reference</dt><dd>{{ result.id }}</dd></div>
+        <div><dt>Date &amp; time</dt><dd>{{ result.date }} · {{ result.timeSlot }}</dd></div>
+        <div><dt>Service address</dt><dd>{{ result.address }}</dd></div>
+      </dl>
+      <a class="primary-link" routerLink="/services">Explore more services</a>
+    </section>
+  } @else if (service(); as item) {
+    <div class="booking-layout">
+      <section class="form-panel">
+        <p class="eyebrow">LET’S GET YOU BOOKED</p>
+        <h1>Choose a time that works</h1>
+        <p class="intro">Share a few details and we’ll take it from there.</p>
+        @if (errorMessage()) {
+          <p class="error-message" role="alert">
+            {{ errorMessage() }}
+            @if (errorMessage().includes('sign-in')) {
+              <a [routerLink]="['/login']" [queryParams]="{ returnUrl: '/services/' + item.id + '/book' }">Sign in</a>
+            }
+          </p>
+        }
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <label for="booking-date">Preferred date</label>
+          <input id="booking-date" type="date" [min]="minimumDate" formControlName="date" required>
+          @if (form.controls.date.touched && form.controls.date.invalid) {
+            <p class="field-error">Choose a date starting tomorrow.</p>
+          }
+
+          <label for="time-slot">Preferred time</label>
+          <select id="time-slot" formControlName="timeSlot" required>
+            <option value="" disabled>Select a time</option>
+            @for (slot of timeSlots; track slot) {
+              <option [value]="slot">{{ slot }}</option>
+            }
+          </select>
+          @if (form.controls.timeSlot.touched && form.controls.timeSlot.invalid) {
+            <p class="field-error">Choose a preferred time.</p>
+          }
+
+          <label for="service-address">Service address</label>
+          <textarea id="service-address" rows="4" maxlength="500" formControlName="address" placeholder="House / flat, street, area, city and PIN code" required></textarea>
+          @if (form.controls.address.touched && form.controls.address.invalid) {
+            <p class="field-error">Enter an address of at least 10 characters.</p>
+          }
+
+          <button class="primary-button" type="submit" [disabled]="submitting()">
+            {{ submitting() ? 'Placing request…' : 'Request booking' }}
+          </button>
+          <p class="form-note">You won’t be charged now. The professional will confirm the final quote before work begins.</p>
+        </form>
+      </section>
+
+      <aside class="summary-card" aria-label="Booking summary">
+        <p class="eyebrow">YOUR SERVICE</p>
+        <div class="service-info">
+          <span class="service-icon" aria-hidden="true">{{ item.emoji || '⌂' }}</span>
+          <div><h2>{{ item.title }}</h2><p>{{ item.duration }}</p></div>
+        </div>
+        <div class="price-row"><span>Starting price</span><strong>₹{{ item.startingPrice.toLocaleString() }}</strong></div>
+        <div class="price-row"><span>Service fee</span><span>₹49</span></div>
+        <div class="price-total"><span>Starting estimate</span><strong>₹{{ item.startingPrice.toLocaleString() }}+</strong></div>
+        <p class="summary-note">A ₹49 service fee applies. Your professional will confirm the final price before work begins.</p>
+      </aside>
+    </div>
+  } @else {
+    <section class="error-message" role="alert">
+      {{ errorMessage() || 'This service is not available.' }}
+      <a routerLink="/services">Browse services</a>
+    </section>
+  }
+</main>

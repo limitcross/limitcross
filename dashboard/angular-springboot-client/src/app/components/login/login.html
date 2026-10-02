@@ -1,0 +1,38 @@
+<main class="login-page">
+  <section class="login-card" aria-labelledby="login-title">
+    <a class="brand" routerLink="/login" aria-label="AtHome home">
+      <span class="brand-mark" aria-hidden="true">a</span>
+      <span>athome</span>
+    </a>
+    <p class="eyebrow">WELCOME BACK</p>
+    <h1 id="login-title">Sign in to your account</h1>
+    <p class="intro">Sign in to explore services and manage your bookings.</p>
+
+    @if (errorMessage()) {
+      <p class="error-message" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label for="username">Username</label>
+      <input id="username" type="text" autocomplete="username" formControlName="username" required>
+      @if (form.controls.username.touched && form.controls.username.invalid) {
+        <p class="field-error">Enter your username.</p>
+      }
+
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" formControlName="password" required>
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+        <p class="field-error">Enter a password with at least 4 characters.</p>
+      }
+
+      <label class="remember">
+        <input type="checkbox" formControlName="rememberMe">
+        <span>Keep me signed in longer</span>
+      </label>
+
+      <button class="primary-button" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Signing in…' : 'Sign in' }}
+      </button>
+    </form>
+  </section>
+</main>
